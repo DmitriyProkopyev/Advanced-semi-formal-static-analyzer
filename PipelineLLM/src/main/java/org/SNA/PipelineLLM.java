@@ -13,19 +13,31 @@ import dev.langchain4j.model.googleai.GoogleAiGeminiChatModel;
  */
 public class PipelineLLM {
   /**
-   * API key of the LLM. Currently Google Gemini is used
+   * API key of the LLM.
    */
-  private final String apiKey = "AIzaSyCcEI2MvZstEDM7iiS2w8FU26dFluad6Vo";
+  private final String apiKey;
   /**
    * Model name.
-   * Available models:
+   * Model examples (gemini):
    * gemini-2.0-flash
    * gemini-1.5-flash
    * gemini-1.5-pro
    * gemini-1.0-prow
    * P.S. !USE VPN!
    */
-  private final String modelName = "gemini-1.5-flash";
+  private final String modelName;
+
+  /**
+   * Initializing Pipeline with model and api key.
+   *
+   * @param key api key of the LLM
+   * @param model model examples (gemini): gemini-2.0-flash,
+  gemini-1.5-flash, gemini-1.5-pro, gemini-1.0-prow
+   */
+  public PipelineLLM(final String key, final String model) {
+    this.apiKey = key;
+    this.modelName = model;
+  }
 
   /**
    * Example.
