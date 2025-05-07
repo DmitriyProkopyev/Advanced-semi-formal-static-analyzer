@@ -169,7 +169,7 @@ public class GraphBuilder implements Graph {
   }
 
 
-  private class Vertex {
+  class Vertex {
     private final String filename;
     private final Path filepath;
     private ArrayList<Vertex> adjVerticies = new ArrayList<>();
