@@ -1,4 +1,4 @@
-package org.SNA;
+package org.SNA.PipeLine;
 
 import dev.langchain4j.data.message.SystemMessage;
 import dev.langchain4j.data.message.UserMessage;
