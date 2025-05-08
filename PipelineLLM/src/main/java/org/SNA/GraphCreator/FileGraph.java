@@ -108,20 +108,26 @@ public class FileGraph implements Graph {
 
   }
 
-Vertex findVertex (Path path) {
+  Vertex findVertex(Path path) {
     return this.vertices.stream()
-            .filter(vertex -> vertex.getFilepath().equals(path))
-            .findFirst().orElse(null);
-}
-Edge findEdge(Vertex from, Vertex to) {
-    return this.edges.stream()
-            .filter(edge -> edge.getFrom().equals(from)
-            && edge.getTo().equals(to))
+            .filter(vertex -> vertex.getFilepath()
+                    .equals(path))
             .findFirst()
             .orElse(null);
-}
+  }
 
-final int COMMIT_lIMIT = 10;
+  Edge findEdge(Vertex from, Vertex to) {
+    return this.edges.stream()
+            .filter(edge -> edge.getFrom()
+                    .equals(from)
+                    && edge.getTo()
+                    .equals(to))
+            .findFirst()
+            .orElse(null);
+  }
+
+  final int COMMIT_lIMIT = 10;
+
   public void parseComits(final String repositoryDir) throws IOException {
     try (
             Repository repository =
@@ -132,7 +138,8 @@ final int COMMIT_lIMIT = 10;
       GitCommitParser parser = new GitCommitParser(repository);
       // fetching commit history in a list format
       LinkedHashMap<String, List<Path>> commitHistoryList =
-              new LinkedHashMap<>(parser.getChangeFilesInFirstNCommits(COMMIT_lIMIT));
+              new LinkedHashMap<>(
+                      parser.getChangeFilesInFirstNCommits(COMMIT_lIMIT));
 
       // Convert List into Array list
       Map<String, ArrayList<Path>> commitHistory =
@@ -147,11 +154,11 @@ final int COMMIT_lIMIT = 10;
               // i.e. add + 1 to vertex commit counters
               // add +1 to edge commonCommit counter
               (commit, filepath) -> {
-                for (int i = 0; i < filepath.size(); i ++) {
+                for (int i = 0; i < filepath.size(); i++) {
                   Vertex from = this.findVertex(filepath.get(i));
                   from.incrementCountCommits();
 
-                  for (int j = i + 1 ;j < filepath.size();j++ ) {
+                  for (int j = i + 1; j < filepath.size(); j++) {
                     Vertex to = this.findVertex(filepath.get(j));
                     Edge edge = this.findEdge(from, to);
                     to.incrementCountCommits();
@@ -215,7 +222,8 @@ final int COMMIT_lIMIT = 10;
     public Vertex getTo() {
       return to;
     }
-    public int incrementCountCommonCommits () {
+
+    public int incrementCountCommonCommits() {
       return this.countCommonCommits += 1;
     }
   }
@@ -249,6 +257,7 @@ final int COMMIT_lIMIT = 10;
     public int getCountCommits() {
       return countCommits;
     }
+
     public int incrementCountCommits() {
       return this.countCommits += 1;
     }
