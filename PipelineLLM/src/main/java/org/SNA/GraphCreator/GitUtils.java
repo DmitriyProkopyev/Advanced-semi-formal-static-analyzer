@@ -3,6 +3,7 @@ package org.SNA.GraphCreator;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
+import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
@@ -17,14 +18,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class GitUtils {
+public class GitUtils implements GitActions {
 
   /**
    * @param repository path to .git folder
-   * @param n          number of commits to be analyze
+   * @param n          number of commits to be analyzed
    * @return commitID:List of changed files
    */
-  public static Map<String, List<Path>> getChangeFilesInFirstNCommits(
+  public Map<String, List<Path>> getChangeFilesInFirstNCommits(
           final Repository repository, final int n) {
     Map<String, List<Path>> result = new LinkedHashMap<>();
 
@@ -35,7 +36,7 @@ public class GitUtils {
       for (RevCommit commit : commits) {
         List<Path> changedFiles = getChangedFilesInCommit(
                 repository,
-                commit.getName()
+                commit.getId()
         );
         result.put(commit.getName(), changedFiles);
       }
@@ -46,28 +47,39 @@ public class GitUtils {
     return result;
   }
 
-  public static List<Path> getChangedFilesInCommit(
-          final Repository repository, final String commitId) {
+  public List<Path> getChangedFilesInCommit(
+          final Repository repository, final ObjectId commitId) {
 
     try (RevWalk revWalk = new RevWalk(repository)) {
-      RevCommit commit = revWalk.parseCommit(repository.resolve(commitId));
+
+      // Fetching commit
+      RevCommit commit = revWalk.parseCommit(commitId);
+
+      // check if commit has parent
       RevCommit parentCommit = commit.getParentCount() > 0
-              ? revWalk.parseCommit(commit.getParent(0)
-              .getId())
+              // get parent commit
+              ? revWalk
+              .parseCommit(commit.getParent(0)
+                      .getId())
+              // otherwise it is first commit
               : null;
 
-
+      // creating reader to
+      // analyze object in repository
       try (ObjectReader reader = repository.newObjectReader()) {
         CanonicalTreeParser newTreeIter = new CanonicalTreeParser();
+
+        // create parser for commit
         newTreeIter.reset(reader, commit.getTree());
 
+        // creat parser for parent commit
+        // if exist
         CanonicalTreeParser oldTreeIter = null;
         if (parentCommit != null) {
           oldTreeIter = new CanonicalTreeParser();
           oldTreeIter.reset(reader, parentCommit.getTree());
         }
 
-        newTreeIter.reset(reader, commit.getTree());
 
         try (Git git = new Git(repository)) {
           List<DiffEntry> diffs = git.diff()
@@ -78,7 +90,11 @@ public class GitUtils {
           return diffs.stream()
                   .map(diff -> {
                     String path = switch (diff.getChangeType()) {
+                      // if file was deleted
+                      // fetch path from parent commit
                       case DELETE -> diff.getOldPath();
+                      // otherwise fetch
+                      // file from child commti
                       default -> diff.getNewPath();
                     };
                     return path != null ? Paths.get(path) : null;

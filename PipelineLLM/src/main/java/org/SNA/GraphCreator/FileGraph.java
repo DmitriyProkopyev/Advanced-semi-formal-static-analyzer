@@ -1,7 +1,5 @@
 package org.SNA.GraphCreator;
 
-import org.SNA.GraphCreator.GraphBuilder.Vertex;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -11,23 +9,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class GraphBuilder implements Graph {
+public class FileGraph implements Graph {
 
   /*
-  <filename,path>
+  <Path, Filename>
    */
-  private Map<String, Path> filenameAndPath;
+  private Map<Path, String> pathFilename;
 
   private ArrayList<Edge> edges;
   private ArrayList<Vertex> vertices;
   private final Path projectRoot;
 
-  public GraphBuilder(final String root) {
+  public FileGraph(final String root) {
     this.projectRoot = Paths.get(root);
-    this.filenameAndPath = new HashMap<>();
+    this.pathFilename = new HashMap<>();
     this.edges = new ArrayList<>();
     this.vertices = new ArrayList<>();
   }
@@ -38,64 +35,77 @@ public class GraphBuilder implements Graph {
    **/
   public void parseFiles() throws IOException {
     try (Stream<Path> walk = Files.walk(projectRoot)) {
-      filenameAndPath = walk
+      pathFilename = walk
               .filter(Files::isRegularFile)
               .filter(path -> !path.getFileName()
                       .toString()
                       .startsWith(".")) // ignore files started with dots (
               // .gitignore)
               .collect(Collectors.toMap(
-                      path -> path.getFileName()
-                              .toString(),
                       path -> path,
-                      // if we havedublicate keys -> pick the last one
+                      path -> path.getFileName().toString(),
+                      // if we have dublicate keys -> pick the last one
                       (oldPath, newPath) -> newPath
               ));
 
     }
     // list of all found files
-    List<String> filenames = new ArrayList<>(filenameAndPath.keySet());
+    List<Path> filepaths = new ArrayList<>(pathFilename.keySet());
 
     // hash map: <filename><file content>
-    Map<String, String> fileContents = new HashMap<>();
+    Map<Path, String> fileContents = new HashMap<>();
 
     // File content
-    for (String filename : filenames) {
-      Path path = filenameAndPath.get(filename);
+    for (Path filepath : filepaths) {
       // if we have binary file - skip
       try {
         fileContents.put(
-                filename,
-                Files.readString(path)
+                filepath,
+                Files.readString(filepath)
         );
       } catch (Exception e) {
 //        System.out.println("Can't open the file. " + e);
       }
     }
-    for (String file1 : filenames) {
-      for (String file2 : filenames) {
-        if (file1.equals(file2)) {
+    for (Path filepath1 : filepaths) {
+      // take filename1 from its path
+      String file1 = this.pathFilename.get(filepath1);
+      for (Path filepath2 : filepaths) {
+        if (filepath1.equals(filepath2)) {
           continue;
         }
         try {
-          final String fileContent = fileContents.get(file2);
+
+          // take filename2 from its path
+          String file2 = this.pathFilename.get(filepath2);
+
+          // fetching file content
+          final String fileContent = fileContents.get(filepath2);
+
+
           //looking for the whole word
           //String regex = "\\b" + Pattern.quote(file1) + "\\b";
           //Pattern pattern = Pattern.compile(regex);
           //Matcher matcher = pattern.matcher(fileContent);
+
           final String nameWoExtension = file1.substring(
                   0,
                   file1.lastIndexOf(".")
           );
+
+          // TODO: в c++ у нас есть name.cpp и name.hpp...
+
+          // check if filename1 is mention in the file2 content
           if (fileContent.contains(nameWoExtension)) {
             System.out.println(file2 + " содержит " + file1);
-            edges.add(new Edge(
+            this.addEdge(
                     new Vertex(
-                            file1, filenameAndPath.get(file1)),
-                    new Vertex(file2, filenameAndPath.get(file2)), 1
-            ));
+                            file1, filepath1),
+                    new Vertex(file2, filepath2)
+            );
 
           }
+          // catch and ignore binary files
         } catch (Exception e) {
 //          System.out.println("Got Error " + e);
         }
@@ -111,26 +121,7 @@ public class GraphBuilder implements Graph {
 
   }
 
-  public static boolean isBinary(final Path file) throws IOException {
-    byte[] bytes = Files.readAllBytes(file);
-    boolean hasZeroByte =
-            IntStream.range(0, bytes.length)
-                    .anyMatch(x -> bytes[x] == 0);
-    if (hasZeroByte) {
-      return true;
-    }
-    return false;
-  }
-  /*
-  At the end after analyzing path and commit
-  dependencies, the complete graph return
-   */
-//  public ArrayList<Edge> build() {
-//    System.out.println("TODO");
-//  }
 
-
-  // Graph logic
 
 
   private void addVertex(final String fileName, final Path filePath) {
