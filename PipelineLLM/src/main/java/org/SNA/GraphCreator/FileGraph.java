@@ -1,13 +1,14 @@
 package org.SNA.GraphCreator;
 
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.lib.RepositoryBuilder;
+
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -17,7 +18,6 @@ public class FileGraph implements Graph {
   <Path, Filename>
    */
   private Map<Path, String> pathFilename;
-
   private ArrayList<Edge> edges;
   private ArrayList<Vertex> vertices;
   private final Path projectRoot;
@@ -108,9 +108,60 @@ public class FileGraph implements Graph {
 
   }
 
+Vertex findVertex (Path path) {
+    return this.vertices.stream()
+            .filter(vertex -> vertex.getFilepath().equals(path))
+            .findFirst().orElse(null);
+}
+Edge findEdge(Vertex from, Vertex to) {
+    return this.edges.stream()
+            .filter(edge -> edge.getFrom().equals(from)
+            && edge.getTo().equals(to))
+            .findFirst()
+            .orElse(null);
+}
 
-  public void pareseComits() {
+final int COMMIT_lIMIT = 10;
+  public void parseComits(final String repositoryDir) throws IOException {
+    try (
+            Repository repository =
+                    new RepositoryBuilder().setGitDir(new File(repositoryDir))
+                            .build();
+    ) {
 
+      GitCommitParser parser = new GitCommitParser(repository);
+      // fetching commit history in a list format
+      LinkedHashMap<String, List<Path>> commitHistoryList =
+              new LinkedHashMap<>(parser.getChangeFilesInFirstNCommits(COMMIT_lIMIT));
+
+      // Convert List into Array list
+      Map<String, ArrayList<Path>> commitHistory =
+              new LinkedHashMap<>();
+      commitHistoryList.forEach(
+              (key, value) -> commitHistory.put(key, new ArrayList<>(value))
+      );
+      commitHistory.forEach(
+              // for each commit
+              // update connection power
+              // between files
+              // i.e. add + 1 to vertex commit counters
+              // add +1 to edge commonCommit counter
+              (commit, filepath) -> {
+                for (int i = 0; i < filepath.size(); i ++) {
+                  Vertex from = this.findVertex(filepath.get(i));
+                  from.incrementCountCommits();
+
+                  for (int j = i + 1 ;j < filepath.size();j++ ) {
+                    Vertex to = this.findVertex(filepath.get(j));
+                    Edge edge = this.findEdge(from, to);
+                    to.incrementCountCommits();
+                    edge.incrementCountCommonCommits();
+
+                  }
+                }
+              }
+      );
+    }
   }
 
 
@@ -157,7 +208,16 @@ public class FileGraph implements Graph {
       this.countCommonCommits = 0;
     }
 
+    public Vertex getFrom() {
+      return from;
+    }
 
+    public Vertex getTo() {
+      return to;
+    }
+    public int incrementCountCommonCommits () {
+      return this.countCommonCommits += 1;
+    }
   }
 
 
@@ -176,6 +236,21 @@ public class FileGraph implements Graph {
 
     public ArrayList<Vertex> getAdjVerticies() {
       return adjVerticies;
+    }
+
+    public String getFilename() {
+      return filename;
+    }
+
+    public Path getFilepath() {
+      return filepath;
+    }
+
+    public int getCountCommits() {
+      return countCommits;
+    }
+    public int incrementCountCommits() {
+      return this.countCommits += 1;
     }
   }
 }

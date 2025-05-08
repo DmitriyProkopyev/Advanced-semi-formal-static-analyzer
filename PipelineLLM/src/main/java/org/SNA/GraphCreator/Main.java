@@ -6,7 +6,6 @@ import org.eclipse.jgit.lib.RepositoryBuilder;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +25,7 @@ public class Main {
               .build();
     ) {
       Map<String, List<Path>> list =
-              new GitUtils().getChangeFilesInFirstNCommits(repo, 20);
+              new GitCommitParser(repo).getChangeFilesInFirstNCommits(20);
       list.forEach((commitId, files) -> {
         System.out.println("CommitID: " + commitId);
         files.forEach(file -> System.out.println(file.toString()));
