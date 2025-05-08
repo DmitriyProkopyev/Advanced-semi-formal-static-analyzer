@@ -35,15 +35,14 @@ public class FileGraph implements Graph {
    **/
   public void parseFiles() throws IOException {
     try (Stream<Path> walk = Files.walk(projectRoot)) {
-      pathFilename = walk
-              .filter(Files::isRegularFile)
+      pathFilename = walk.filter(Files::isRegularFile)
               .filter(path -> !path.getFileName()
                       .toString()
                       .startsWith(".")) // ignore files started with dots (
               // .gitignore)
               .collect(Collectors.toMap(
-                      path -> path,
-                      path -> path.getFileName().toString(),
+                      path -> path, path -> path.getFileName()
+                              .toString(),
                       // if we have dublicate keys -> pick the last one
                       (oldPath, newPath) -> newPath
               ));
@@ -59,10 +58,7 @@ public class FileGraph implements Graph {
     for (Path filepath : filepaths) {
       // if we have binary file - skip
       try {
-        fileContents.put(
-                filepath,
-                Files.readString(filepath)
-        );
+        fileContents.put(filepath, Files.readString(filepath));
       } catch (Exception e) {
 //        System.out.println("Can't open the file. " + e);
       }
@@ -88,21 +84,18 @@ public class FileGraph implements Graph {
           //Pattern pattern = Pattern.compile(regex);
           //Matcher matcher = pattern.matcher(fileContent);
 
-          final String nameWoExtension = file1.substring(
-                  0,
-                  file1.lastIndexOf(".")
-          );
+          final String nameWoExtension =
+                  file1.substring(0, file1.lastIndexOf("."));
 
           // TODO: в c++ у нас есть name.cpp и name.hpp...
 
           // check if filename1 is mention in the file2 content
           if (fileContent.contains(nameWoExtension)) {
             System.out.println(file2 + " содержит " + file1);
-            this.addEdge(
-                    new Vertex(
-                            file1, filepath1),
-                    new Vertex(file2, filepath2)
-            );
+
+            Vertex from = addVertex(file1, filepath1);
+            Vertex to = addVertex(file2, filepath2);
+            this.addEdge(from, to);
 
           }
           // catch and ignore binary files
@@ -116,21 +109,25 @@ public class FileGraph implements Graph {
   }
 
 
-
   public void pareseComits() {
 
   }
 
 
-
-
-  private void addVertex(final String fileName, final Path filePath) {
-    this.vertices.add(new Vertex(fileName, filePath));
+  private Vertex addVertex(final String fileName, final Path filePath) {
+    Vertex newVertex = new Vertex(fileName, filePath);
+    this.vertices.add(newVertex);
+    return newVertex;
 
   }
 
-  private void addEdge(final Vertex from, final Vertex to) {
-    this.edges.add(new Edge(from, to, 1));
+  private Edge addEdge(final Vertex from, final Vertex to) {
+    Edge newEdge = new Edge(from, to, 1);
+    this.edges.add(newEdge);
+    from.getAdjVerticies()
+            .add(to);
+    return newEdge;
+
 
   }
 
@@ -138,6 +135,8 @@ public class FileGraph implements Graph {
   public class Edge {
 
     private Vertex from;
+
+
     private Vertex to;
 
 
@@ -147,6 +146,7 @@ public class FileGraph implements Graph {
      * then A -> B with init weight = 1
      **/
     private int weight;
+    private int countCommonCommits;
 
     public Edge(
             final Vertex fromFile, final Vertex toFile,
@@ -154,6 +154,7 @@ public class FileGraph implements Graph {
       this.from = fromFile;
       this.to = toFile;
       this.weight = influence;
+      this.countCommonCommits = 0;
     }
 
 
@@ -163,11 +164,18 @@ public class FileGraph implements Graph {
   class Vertex {
     private final String filename;
     private final Path filepath;
+
+
     private ArrayList<Vertex> adjVerticies = new ArrayList<>();
+    private int countCommits;
 
     private Vertex(final String file, final Path path) {
       this.filename = file;
       this.filepath = path;
+    }
+
+    public ArrayList<Vertex> getAdjVerticies() {
+      return adjVerticies;
     }
   }
 }
