@@ -1,9 +1,9 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="AdvancedSemiFormalStaticAnalyzerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+  <configuration default="false" name="AdvancedSemiFormalStaticAnalyzerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" activateToolWindowBeforeRun="false" focusToolWindowBeforeRun="true" nameIsGenerated="true">
     <module name="sna" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="iu.sna.AdvancedSemiFormalStaticAnalyzerApplication" />
     <method v="2">
-      <option name="Maven.BeforeRunTask" enabled="true" file="$PROJECT_DIR$/pom.xml" goal="clean install" />
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="sna [clean,install]" run_configuration_type="MavenRunConfiguration" />
       <option name="Make" enabled="true" />
     </method>
   </configuration>
