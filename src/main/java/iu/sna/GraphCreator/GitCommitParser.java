@@ -18,24 +18,38 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class GitCommitParser implements GitUtils {
+/**
+ * Parse input git repository.
+ * Has methods to find changed files
+ * in commits
+ */
+public final class GitCommitParser implements GitUtils {
+  /**
+   * Wrapper of path to .git directory.
+   */
+  private final Repository repository;
 
-  final Repository repository;
-
-
-  public GitCommitParser(Repository repository) {
-    this.repository = repository;
+  /**
+   * Initialize repository
+   * which will be parsed.
+   *
+   * @param inputRepository - wrapper path for .git directory
+   */
+  public GitCommitParser(final Repository inputRepository) {
+    this.repository = inputRepository;
 
   }
 
   /**
+   * Launch iteration over first N commits
+   * For each commit call getChangedFilesInCommit.
+   *
    * @param numberOfCommits number of commits to be analyzed
    * @return commitID:List of changed files
    */
-  public Map<String, List<Path>> getChangeFilesInFirstNCommits(
+  public Map<String, List<Path>> getChangeFilesInFirstNcommits(
           final int numberOfCommits) {
     Map<String, List<Path>> result = new LinkedHashMap<>();
-
     try (Git git = new Git(this.repository)) {
       Iterable<RevCommit> commits = git.log()
               .setMaxCount(numberOfCommits)
@@ -54,6 +68,12 @@ public class GitCommitParser implements GitUtils {
     return result;
   }
 
+  /**
+   * Analyze changed files in commit.
+   *
+   * @param commitId commit id
+   * @return List of changed files in the commit
+   */
   public List<Path> getChangedFilesInCommit(
           final ObjectId commitId) {
 
@@ -72,7 +92,7 @@ public class GitCommitParser implements GitUtils {
               : null;
 
       // creating reader to
-      // analyze object in repository
+      // analyze objects in repository
       try (ObjectReader reader = this.repository.newObjectReader()) {
         CanonicalTreeParser newTreeIter = new CanonicalTreeParser();
 

@@ -25,7 +25,7 @@ public class Main {
               .build();
     ) {
       Map<String, List<Path>> list =
-              new GitCommitParser(repo).getChangeFilesInFirstNCommits(20);
+              new GitCommitParser(repo).getChangeFilesInFirstNcommits(20);
       list.forEach((commitId, files) -> {
         System.out.println("CommitID: " + commitId);
         files.forEach(file -> System.out.println(file.toString()));

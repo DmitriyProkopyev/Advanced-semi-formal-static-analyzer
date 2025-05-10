@@ -8,7 +8,7 @@ import java.util.Map;
 
 public interface GitUtils {
 
-  Map<String, List<Path>> getChangeFilesInFirstNCommits(
+  Map<String, List<Path>> getChangeFilesInFirstNcommits(
           final int n);
 
 

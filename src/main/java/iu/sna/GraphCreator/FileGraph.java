@@ -14,9 +14,9 @@ import java.util.stream.Stream;
 
 public class FileGraph implements Graph {
 
-  /*
+  /**
   <Path, Filename>
-   */
+   **/
   private Map<Path, String> pathFilename;
   private ArrayList<Edge> edges;
   private ArrayList<Vertex> vertices;
@@ -139,7 +139,7 @@ public class FileGraph implements Graph {
       // fetching commit history in a list format
       LinkedHashMap<String, List<Path>> commitHistoryList =
               new LinkedHashMap<>(
-                      parser.getChangeFilesInFirstNCommits(COMMIT_lIMIT));
+                      parser.getChangeFilesInFirstNcommits(COMMIT_lIMIT));
 
       // Convert List into Array list
       Map<String, ArrayList<Path>> commitHistory =
