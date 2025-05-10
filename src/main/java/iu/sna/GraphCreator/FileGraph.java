@@ -15,57 +15,79 @@ import java.util.stream.Stream;
 public class FileGraph implements Graph {
 
   /**
-  <Path, Filename>
+   * <Path, Filename>
    **/
-  private Map<Path, String> pathFilename;
+  private Map<Path, String> pathToFilename;
+  /**
+   * All edges in the graph.
+   */
   private ArrayList<Edge> edges;
+  /**
+   * All vertices in the graph.
+   */
   private ArrayList<Vertex> vertices;
+
+  /**
+   * Wrapper to staring path
+   * to the project root.
+   * Notice, that .git directory
+   * should be included in root
+   */
   private final Path projectRoot;
 
+  /**
+   * initialize graph objects.
+   *
+   * @param root String absolute path to the root
+   */
   public FileGraph(final String root) {
-    this.projectRoot = Paths.get(root);
-    this.pathFilename = new HashMap<>();
+    this.projectRoot = Paths.get(root); // wrap string path to Path class
+    this.pathToFilename = new HashMap<>();
     this.edges = new ArrayList<>();
     this.vertices = new ArrayList<>();
   }
 
   /**
-   * assume that filenames
-   * are unique
+   * Parse recursively files.
+   * The DFS algorithm was used.
    **/
   public void parseFiles() throws IOException {
     try (Stream<Path> walk = Files.walk(projectRoot)) {
-      pathFilename = walk.filter(Files::isRegularFile)
+      pathToFilename = walk
+              // consider only regular files
+              // (directories are files too)
+              .filter(Files::isRegularFile)
               .filter(path -> !path.getFileName()
                       .toString()
-                      .startsWith(".")) // ignore files started with dots (
-              // .gitignore)
+                      // ignore files started with dots
+                      // (i.e. .gitignore)
+                      .startsWith("."))
+              // convert to map
               .collect(Collectors.toMap(
                       path -> path, path -> path.getFileName()
                               .toString(),
-                      // if we have dublicate keys -> pick the last one
+                      // if we have duplicate keys -> pick the last one
                       (oldPath, newPath) -> newPath
               ));
 
     }
-    // list of all found files
-    List<Path> filepaths = new ArrayList<>(pathFilename.keySet());
+    // list of all found filepaths
+    List<Path> filepaths = new ArrayList<>(pathToFilename.keySet());
 
     // hash map: <filename><file content>
     Map<Path, String> fileContents = new HashMap<>();
 
     // File content
     for (Path filepath : filepaths) {
-      // if we have binary file - skip
       try {
         fileContents.put(filepath, Files.readString(filepath));
       } catch (Exception e) {
-//        System.out.println("Can't open the file. " + e);
+        // got incorrect filetype (i.e. binary)
       }
     }
     for (Path filepath1 : filepaths) {
       // take filename1 from its path
-      String file1 = this.pathFilename.get(filepath1);
+      String file1 = this.pathToFilename.get(filepath1);
       for (Path filepath2 : filepaths) {
         if (filepath1.equals(filepath2)) {
           continue;
@@ -73,9 +95,9 @@ public class FileGraph implements Graph {
         try {
 
           // take filename2 from its path
-          String file2 = this.pathFilename.get(filepath2);
+          String file2 = this.pathToFilename.get(filepath2);
 
-          // fetching file content
+          // fetching file2 content
           final String fileContent = fileContents.get(filepath2);
 
 
@@ -95,12 +117,13 @@ public class FileGraph implements Graph {
 
             Vertex from = addVertex(file1, filepath1);
             Vertex to = addVertex(file2, filepath2);
-            this.addEdge(from, to);
+            addEdge(from, to);
 
           }
           // catch and ignore binary files
         } catch (Exception e) {
-//          System.out.println("Got Error " + e);
+
+          // got incorrect filetype (i.e. binary)
         }
 
       }
@@ -108,51 +131,24 @@ public class FileGraph implements Graph {
 
   }
 
-  Vertex findVertex(Path path) {
-    return this.vertices.stream()
-            .filter(vertex -> vertex.getFilepath()
-                    .equals(path))
-            .findFirst()
-            .orElse(null);
-  }
-
-  Edge findEdge(Vertex from, Vertex to) {
-    return this.edges.stream()
-            .filter(edge -> edge.getFrom()
-                    .equals(from)
-                    && edge.getTo()
-                    .equals(to))
-            .findFirst()
-            .orElse(null);
-  }
 
   final int COMMIT_lIMIT = 10;
 
-  public void parseComits(final String repositoryDir) throws IOException {
+  public void parseComits() throws IOException {
     try (
             Repository repository =
-                    new RepositoryBuilder().setGitDir(new File(repositoryDir))
+                    new RepositoryBuilder().setGitDir(new File(projectRoot
+                                    + "/.git"))
                             .build();
     ) {
 
-      GitCommitParser parser = new GitCommitParser(repository);
-      // fetching commit history in a list format
-      LinkedHashMap<String, List<Path>> commitHistoryList =
-              new LinkedHashMap<>(
-                      parser.getChangeFilesInFirstNcommits(COMMIT_lIMIT));
-
-      // Convert List into Array list
       Map<String, ArrayList<Path>> commitHistory =
-              new LinkedHashMap<>();
-      commitHistoryList.forEach(
-              (key, value) -> commitHistory.put(key, new ArrayList<>(value))
-      );
+              getCommitHistory(repository);
       commitHistory.forEach(
               // for each commit
               // update connection power
               // between files
-              // i.e. add + 1 to vertex commit counters
-              // add +1 to edge commonCommit counter
+
               (commit, filepath) -> {
                 for (int i = 0; i < filepath.size(); i++) {
                   Vertex from = this.findVertex(filepath.get(i));
@@ -171,6 +167,41 @@ public class FileGraph implements Graph {
     }
   }
 
+  private Map<String, ArrayList<Path>> getCommitHistory(
+          final Repository repository) {
+    GitCommitParser parser = new GitCommitParser(repository);
+    // fetching commit history in a list format
+    LinkedHashMap<String, List<Path>> commitHistoryList =
+            new LinkedHashMap<>(
+                    parser.getChangeFilesInFirstNcommits(COMMIT_lIMIT));
+
+    // Convert List into Array list
+    Map<String, ArrayList<Path>> commitHistory =
+            new LinkedHashMap<>();
+    commitHistoryList.forEach(
+            (key, value) -> commitHistory.put(key, new ArrayList<>(value))
+    );
+    return commitHistory;
+  }
+
+
+  Vertex findVertex(final Path path) {
+    return this.vertices.stream()
+            .filter(vertex -> vertex.getFilepath()
+                    .equals(path))
+            .findFirst()
+            .orElse(null);
+  }
+
+  Edge findEdge(Vertex from, Vertex to) {
+    return this.edges.stream()
+            .filter(edge -> edge.getFrom()
+                    .equals(from)
+                    && edge.getTo()
+                    .equals(to))
+            .findFirst()
+            .orElse(null);
+  }
 
   private Vertex addVertex(final String fileName, final Path filePath) {
     Vertex newVertex = new Vertex(fileName, filePath);
