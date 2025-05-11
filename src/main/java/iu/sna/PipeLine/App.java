@@ -9,7 +9,7 @@ import java.io.IOException;
  * Hello world!
  */
 public class App {
-  public static void main(final String[] args) throws IOException {
+ public static void main(final String[] args) throws IOException {
     BufferedReader reader = new BufferedReader(
             new FileReader("src/main/java/org/SNA/PipeLine/api-keys.txt"));
     final String key = reader.readLine();

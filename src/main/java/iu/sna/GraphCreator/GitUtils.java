@@ -12,7 +12,7 @@ public interface GitUtils {
           final int n);
 
 
-  List<Path> getChangedFilesInCommit(
+  Map<Path, Integer> getChangedFilesInCommit(
           final ObjectId commitId);
 
 }
