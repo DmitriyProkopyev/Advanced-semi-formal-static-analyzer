@@ -3,12 +3,10 @@ package iu.sna.GraphCreator;
 import lombok.Getter;
 import lombok.Setter;
 import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.lib.RepositoryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -34,7 +32,7 @@ import java.util.stream.Stream;
  */
 @Component
 @Getter
-public class FileGraph implements Graph {
+public class FileGraph {
     /**
      * Coefficient for commit importance in weight calculations.
      * Loaded from application.yaml.
