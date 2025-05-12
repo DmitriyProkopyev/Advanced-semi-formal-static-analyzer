@@ -13,7 +13,7 @@ public class Main {
     FileGraph graph = new FileGraph("/home/aziz/test");
     graph.buildGraph();
     var edges = graph.getEdges();
-    for (Edge edge : edges) {
+    for (FileGraph.Edge edge : edges) {
 
       System.out.println(edge.getFrom().getFilename() + "-- " + edge.getCompoundWeight()+ " --" + edge.getTo().getFilename());
     }

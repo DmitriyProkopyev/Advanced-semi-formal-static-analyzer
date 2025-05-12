@@ -1,8 +1,10 @@
 package iu.sna.GraphCreator;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryBuilder;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,6 +56,7 @@ public class FileGraph implements Graph {
         this.edges = new ArrayList<>();
         this.vertices = new ArrayList<>();
     }
+
 
     /**
      * Parse recursively files.
@@ -291,4 +294,82 @@ public class FileGraph implements Graph {
         from.getAdjVerticies().add(to);
         return newEdge;
     }
+
+    @Getter
+    @Setter
+    public class Vertex {
+        private final String filename;
+        private final Path filepath;
+        private int countCommits = 0;
+        private int totalChangedLines = 0;
+        private ArrayList<Vertex> adjVerticies = new ArrayList<>();
+
+        Vertex(final String file, final Path path) {
+            this.filename = file;
+            this.filepath = path;
+        }
+
+        public int incrementCountCommits() {
+            return this.countCommits += 1;
+        }
+
+        public int incrementTotalChangedLines(int i) {
+            return totalChangedLines += i;
+        }
+    }
+
+    @Getter
+    @Setter
+    public class Edge {
+        private Vertex from;
+        private Vertex to;
+        private double FILE_LOCATION_COEF;
+        private double compoundWeight = 0;
+        private int countCommonCommits = 0;
+        private int countCommonChangedLines = 0;
+        private double locationValueCoeficient = 1;
+
+        Edge(final Vertex fromFile, final Vertex toFile) {
+            this.from = fromFile;
+            this.to = toFile;
+            initFileLocationCoef(
+                    fromFile.getFilepath().toString(),
+                    toFile.getFilepath().toString()
+            );
+        }
+
+        private void initFileLocationCoef(String filepath1, String filepath2) {
+            String[] s1 = filepath1.split("/");
+            String[] s2 = filepath2.split("/");
+
+            int file1Depth = s1.length - 1;
+            int file2Depth = s2.length - 1;
+
+            int commonRootDepth = calcCommonRootDepth(s1, s2);
+            double mean = (file1Depth + file2Depth) / 2.0;
+
+            double maxDepth = Math.max(file1Depth, file2Depth);
+            double depthRatio = maxDepth > 0 ? (mean - commonRootDepth) / maxDepth : 0;
+
+            this.FILE_LOCATION_COEF = (1.5 - depthRatio) * locationValueCoeficient;
+        }
+
+        private int calcCommonRootDepth(String[] s1, String[] s2) {
+            int i = 0;
+            int minLen = Math.min(s1.length, s2.length);
+            while (i < minLen && s1[i].equals(s2[i])) {
+                i++;
+            }
+            return i - 1;
+        }
+
+        public int incrementCountCommonCommits() {
+            return this.countCommonCommits += 1;
+        }
+
+        public int incrementCountCommonChangedLines(int i) {
+            return countCommonChangedLines += i;
+        }
+    }
+
 }
