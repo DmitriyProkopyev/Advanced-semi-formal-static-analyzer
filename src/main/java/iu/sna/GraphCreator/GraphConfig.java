@@ -14,16 +14,23 @@ import java.io.IOException;
  * This class is responsible for:
  * 1. Creating and configuring the Git repository bean
  * 2. Setting up the GitCommitParser
- * 3. Managing project-wide configuration values
+ * 3. Managing project-wide configuration values.
  *
- * The configuration values are automatically loaded from application.yaml:
+ * <p>The configuration values are automatically loaded from application.yaml:
  * - project.root: The root directory of the project to analyze
  * - constants.location_value_coefficient: Coefficient for location-based calculations
  * - constants.commit_importance_coefficient: Weight coefficient for commit importance
+ *
+ * @author Your Name
+ * @version 1.0
  */
 @Configuration
 public class GraphConfig {
 
+    /**
+     * The root directory of the project to analyze.
+     * Defaults to the current working directory if not specified.
+     */
     @Value("${project.root:${user.dir}}")
     private String projectRoot;
 
@@ -32,7 +39,7 @@ public class GraphConfig {
      * The repository is initialized from the .git directory in the project root.
      *
      * @return Configured Git Repository instance
-     * @throws IOException if the repository cannot be accessed
+     * @throws IOException if the repository cannot be accessed or .git directory is not found
      */
     @Bean
     public Repository gitRepository() throws IOException {
