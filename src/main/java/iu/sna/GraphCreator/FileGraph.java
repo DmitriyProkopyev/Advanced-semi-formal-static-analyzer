@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -20,10 +22,16 @@ import java.util.stream.Stream;
  * This class builds a graph where vertices represent files and edges represent relationships
  * between files based on commit history and file content analysis.
  */
+@Component
 @Getter
 public class FileGraph implements Graph {
-    private static final double COMMIT_COMPOUND_WEIGHT_COEF = 1.0;
-    private static final int COMMIT_LIMIT = 10;
+    @Value("${constants.commit_importance_coefficient}")
+    private double commitCompoundWeightCoef;
+    
+    @Value("${constants.commit_limit:10}")
+    private int commitLimit;
+    @Value("${constants.location_value_coefficient}")
+    private double locationValueCoeficient;
 
     /**
      * Maps file paths to their filenames
@@ -45,18 +53,26 @@ public class FileGraph implements Graph {
      */
     private final Path projectRoot;
 
+    private final Repository repository;
+
     /**
      * Initialize graph objects.
      *
-     * @param root String absolute path to the root
+     * @param projectRoot String absolute path to the root
+     * @param repository Git repository instance
      */
-    public FileGraph(final String root) {
-        this.projectRoot = Paths.get(root);
+    @Autowired
+    public FileGraph(@Value("${project.root:${user.dir}}") String projectRoot, Repository repository) {
+        if (projectRoot == null || projectRoot.isEmpty()) {
+            // If project root is not provided, use the current working directory
+            projectRoot = System.getProperty("user.dir");
+        }
+        this.projectRoot = Paths.get(projectRoot);
+        this.repository = repository;
         this.pathToFilename = new HashMap<>();
         this.edges = new ArrayList<>();
         this.vertices = new ArrayList<>();
     }
-
 
     /**
      * Parse recursively files.
@@ -140,13 +156,8 @@ public class FileGraph implements Graph {
     }
 
     public void parseCommits() throws IOException {
-        try (Repository repository = new RepositoryBuilder()
-                .setGitDir(new File(projectRoot + "/.git"))
-                .build()) {
-            
-            List<List<ChangedFile>> commitHistory = getCommitHistory(repository);
-            processCommitHistory(commitHistory);
-        }
+        List<List<ChangedFile>> commitHistory = getCommitHistory(repository);
+        processCommitHistory(commitHistory);
     }
 
     private void processCommitHistory(List<List<ChangedFile>> commitHistory) {
@@ -236,7 +247,7 @@ public class FileGraph implements Graph {
         }
 
         double result = (((double) commonFileChangesCounter * avgCommonChangedLines)
-                / denominator) * fileLocationCoef * COMMIT_COMPOUND_WEIGHT_COEF;
+                / denominator) * fileLocationCoef * commitCompoundWeightCoef;
 
         // Handle potential NaN or Infinity
         if (Double.isNaN(result) || Double.isInfinite(result)) {
@@ -265,7 +276,7 @@ public class FileGraph implements Graph {
 
     private List<List<ChangedFile>> getCommitHistory(Repository repository) {
         GitCommitParser parser = new GitCommitParser(repository);
-        return new ArrayList<>(parser.getChangeFilesInFirstNcommits(COMMIT_LIMIT));
+        return new ArrayList<>(parser.getChangeFilesInFirstNcommits(commitLimit));
     }
 
     Vertex findVertex(final Path path) {
@@ -327,7 +338,6 @@ public class FileGraph implements Graph {
         private double compoundWeight = 0;
         private int countCommonCommits = 0;
         private int countCommonChangedLines = 0;
-        private double locationValueCoeficient = 1;
 
         Edge(final Vertex fromFile, final Vertex toFile) {
             this.from = fromFile;

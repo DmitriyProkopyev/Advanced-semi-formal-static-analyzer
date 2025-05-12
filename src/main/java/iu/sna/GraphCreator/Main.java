@@ -10,13 +10,13 @@ public class Main {
           "/home/aziz/Projects/Advanced-semi-formal-static-analyzer/PipelineLLM";
 
   public static void main(final String[] qwe) throws IOException {
-    FileGraph graph = new FileGraph("/home/aziz/test");
-    graph.buildGraph();
-    var edges = graph.getEdges();
-    for (FileGraph.Edge edge : edges) {
-
-      System.out.println(edge.getFrom().getFilename() + "-- " + edge.getCompoundWeight()+ " --" + edge.getTo().getFilename());
-    }
+//    FileGraph graph = new FileGraph("/home/aziz/test");
+//    graph.buildGraph();
+//    var edges = graph.getEdges();
+//    for (FileGraph.Edge edge : edges) {
+//
+//      System.out.println(edge.getFrom().getFilename() + "-- " + edge.getCompoundWeight()+ " --" + edge.getTo().getFilename());
+//    }
 
 //    try (
 //      Repository repo = new RepositoryBuilder().setGitDir(new File(
