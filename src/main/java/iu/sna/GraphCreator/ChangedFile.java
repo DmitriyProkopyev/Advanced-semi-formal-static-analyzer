@@ -1,7 +1,9 @@
 package iu.sna.GraphCreator;
 
-import java.nio.file.Path;
+import lombok.Getter;
 
+import java.nio.file.Path;
+@Getter
 public class ChangedFile {
   Path path;
 
@@ -14,11 +16,5 @@ public class ChangedFile {
     this.path = filepath;
     this.changedLines = changes;
   }
-  public Integer getChangedLines() {
-    return changedLines;
-  }
 
-  public Path getPath() {
-    return path;
-  }
 }

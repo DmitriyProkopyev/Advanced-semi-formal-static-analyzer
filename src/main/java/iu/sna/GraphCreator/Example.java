@@ -1,7 +1,5 @@
 package iu.sna.GraphCreator;
 
-import iu.sna.GraphCreator.FileGraph;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -9,15 +7,15 @@ import org.springframework.context.ConfigurableApplicationContext;
 import java.io.IOException;
 
 @SpringBootApplication
-public class AdvancedSemiFormalStaticAnalyzerApplicationTest {
+public class Example {
 
 
   public static void main(String[] args) throws IOException {
     ConfigurableApplicationContext context = SpringApplication.run(
-            AdvancedSemiFormalStaticAnalyzerApplicationTest.class, args);
-
-    AdvancedSemiFormalStaticAnalyzerApplicationTest app =
-            context.getBean(AdvancedSemiFormalStaticAnalyzerApplicationTest.class);
+            Example.class, args);
+// NB! Set directory with .git folder in application.yaml
+    Example app =
+            context.getBean(Example.class);
     var graph = context.getBean(FileGraph.class);
     graph.buildGraph();
     var edges = graph.getEdges();
