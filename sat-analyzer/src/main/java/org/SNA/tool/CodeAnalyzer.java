@@ -1,17 +1,17 @@
 package org.SNA.tool;
 
-import org.SNA.core.AnalysisTool;
 import org.SNA.core.ToolResult;
+import org.SNA.core.interfaces.IAnalysisTool;
+import org.SNA.analyzers.*;
 
-// import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 
 public class CodeAnalyzer {
-    private List<AnalysisTool> tools = new ArrayList<>();
-    private String projectPath;
+    private final List<IAnalysisTool> tools = new ArrayList<>();
+    private final String projectPath;
     
     public CodeAnalyzer(String projectPath) {
         this.projectPath = projectPath;
@@ -19,18 +19,18 @@ public class CodeAnalyzer {
     }
     
     private void initializeTools() {
-        // tools.add(new CheckstyleTool());
-        // tools.add(new PMDTool());
-        // tools.add(new SpotBugsTool());
-        // tools.add(new SemgrepTool());
-        // tools.add(new OpenAPIValidatorTool());
-        // tools.add(new GitValidatorTool());
+        tools.add(new CheckstyleAnalyzer());
+        tools.add(new PMD());
+        tools.add(new SpotBugsAnalyzer());
+        // tools.add(new SemgrepAnalyzer());
+        // tools.add(new OpenAPIAnalyzer());
+        // tools.add(new GitHistoryAnalyzer());
     }
     
     public AnalysisReport runAnalysis() {
         AnalysisReport report = new AnalysisReport();
         
-        for (AnalysisTool tool : tools) {
+        for (IAnalysisTool tool : tools) {
             try {
                 ToolResult result = tool.analyze(projectPath);
                 report.addResult(tool.getName(), result);
@@ -61,8 +61,8 @@ public class CodeAnalyzer {
 }
 
 class AnalysisReport {
-    private Map<String, ToolResult> results = new HashMap<>();
-    private Map<String, String> errors = new HashMap<>();
+    private final Map<String, ToolResult> results = new HashMap<>();
+    private final Map<String, String> errors = new HashMap<>();
     
     public void addResult(String toolName, ToolResult result) {
         results.put(toolName, result);
@@ -73,11 +73,50 @@ class AnalysisReport {
     }
     
     public void printReport() {
-        // Вывод отчета
+        System.out.println("\n=== Static Code Analysis Report ===\n");
+        
+        // Print successful tool results
+        results.forEach((toolName, result) -> {
+            System.out.printf("Tool: %s\n", toolName);
+            System.out.printf("  Errors: %d, Warnings: %d\n", 
+                result.getErrorCount(), result.getWarningCount());
+            
+            List<String> messages = result.getMessages();
+            if (messages != null && !messages.isEmpty()) {
+                System.out.println("  Issues found:");
+                messages.forEach(msg -> System.out.println("  - " + msg));
+            } else {
+                System.out.println("  No issues found");
+            }
+            System.out.println();
+        });
+        
+        // Print errors from failed tools
+        if (!errors.isEmpty()) {
+            System.out.println("\n=== Analysis Errors ===");
+            errors.forEach((toolName, error) -> {
+                System.out.printf("Tool %s failed: %s\n", toolName, error);
+            });
+        }
+        
+        // Print summary
+        System.out.println("\n=== Summary ===");
+        long totalErrors = results.values().stream()
+            .mapToInt(ToolResult::getErrorCount)
+            .sum();
+        long totalWarnings = results.values().stream()
+            .mapToInt(ToolResult::getWarningCount)
+            .sum();
+        System.out.printf("Total errors: %d, Total warnings: %d\n", totalErrors, totalWarnings);
+        
+        if (!errors.isEmpty()) {
+            System.out.printf("%d tools failed to complete analysis\n", errors.size());
+        }
     }
     
     public boolean hasErrors() {
-        // Проверка наличия ошибок
-        return false;
+        boolean hasAnalysisErrors = results.values().stream()
+            .anyMatch(result -> result.getErrorCount() > 0);
+        return hasAnalysisErrors || !errors.isEmpty();
     }
 }
