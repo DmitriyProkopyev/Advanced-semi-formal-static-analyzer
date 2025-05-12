@@ -5,5 +5,5 @@ constants:
   location_value_coefficient: 1
   commit_importance_coefficient: 1
 project:
-  root: "/home/aziz/Projects/Advanced-semi-formal-static-analyzer"
+#  root: "/home/aziz/Projects/Advanced-semi-formal-static-analyzer"
 #  root: "/home/aziz/tes"
