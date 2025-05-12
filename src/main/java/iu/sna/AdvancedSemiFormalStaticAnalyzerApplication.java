@@ -14,7 +14,7 @@ public class AdvancedSemiFormalStaticAnalyzerApplication {
 
   public static void main(String[] args) throws IOException {
     ConfigurableApplicationContext context = SpringApplication.run(
-            iu.sna.AdvancedSemiFormalStaticAnalyzerApplicationTest.class, args);
+            iu.sna.AdvancedSemiFormalStaticAnalyzerApplication.class, args);
 
   }
 }

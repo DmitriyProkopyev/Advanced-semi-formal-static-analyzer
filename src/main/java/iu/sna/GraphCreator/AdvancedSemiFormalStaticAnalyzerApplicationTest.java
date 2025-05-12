@@ -1,4 +1,4 @@
-package iu.sna;
+package iu.sna.GraphCreator;
 
 import iu.sna.GraphCreator.FileGraph;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,8 +10,7 @@ import java.io.IOException;
 
 @SpringBootApplication
 public class AdvancedSemiFormalStaticAnalyzerApplicationTest {
-  @Value("${constants.commit_importance_coefficient}")
-  private double s;
+
 
   public static void main(String[] args) throws IOException {
     ConfigurableApplicationContext context = SpringApplication.run(
