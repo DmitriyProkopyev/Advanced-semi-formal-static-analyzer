@@ -1,13 +1,6 @@
 package iu.sna.GraphCreator;
 
-import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.lib.RepositoryBuilder;
-
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.Map;
 
 public class Main {
 
@@ -17,11 +10,10 @@ public class Main {
           "/home/aziz/Projects/Advanced-semi-formal-static-analyzer/PipelineLLM";
 
   public static void main(final String[] qwe) throws IOException {
-    FileGraph graph = new FileGraph("/home/aziz/Projects/Advanced-semi-formal" +
-            "-static-analyzer");
+    FileGraph graph = new FileGraph("/home/aziz/test");
     graph.buildGraph();
     var edges = graph.getEdges();
-    for (FileGraph.Edge edge : edges) {
+    for (Edge edge : edges) {
 
       System.out.println(edge.getFrom().getFilename() + "-- " + edge.getCompoundWeight()+ " --" + edge.getTo().getFilename());
     }
