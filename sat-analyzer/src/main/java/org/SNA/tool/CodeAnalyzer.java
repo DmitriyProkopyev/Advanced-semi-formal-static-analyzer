@@ -1,13 +1,14 @@
 package org.SNA.tool;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.SNA.analyzers.CheckstyleAnalyzer;
+import org.SNA.analyzers.SpotBugsAnalyzer;
 import org.SNA.core.ToolResult;
 import org.SNA.core.interfaces.IAnalysisTool;
-import org.SNA.analyzers.*;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
 
 public class CodeAnalyzer {
     private final List<IAnalysisTool> tools = new ArrayList<>();
@@ -20,14 +21,14 @@ public class CodeAnalyzer {
     
     private void initializeTools() {
         tools.add(new CheckstyleAnalyzer());
-        tools.add(new PMD());
+        // tools.add(new PMDAnalyzer());
         tools.add(new SpotBugsAnalyzer());
         // tools.add(new SemgrepAnalyzer());
         // tools.add(new OpenAPIAnalyzer());
         // tools.add(new GitHistoryAnalyzer());
     }
     
-    public AnalysisReport runAnalysis() {
+    private AnalysisReport runAnalysis() {
         AnalysisReport report = new AnalysisReport();
         
         for (IAnalysisTool tool : tools) {
@@ -44,7 +45,7 @@ public class CodeAnalyzer {
     
     public static void main(String[] args) {
         if (args.length == 0) {
-            System.out.println("Usage: java CodeAnalyzer <project-path>");
+            System.out.println("Please, specify project path. Usage: java CodeAnalyzer <project-path>");
             return;
         }
         

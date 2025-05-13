@@ -1,72 +1,84 @@
 package org.SNA.analyzers;
 
-import org.SNA.core.interfaces.IAnalysisTool;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.SNA.core.ToolResult;
 import org.SNA.core.exceptions.AnalysisException;
+import org.SNA.core.interfaces.IAnalysisTool;
 
-import edu.umd.cs.findbugs.*;
+import edu.umd.cs.findbugs.BugCollection;
+import edu.umd.cs.findbugs.BugInstance;
+import edu.umd.cs.findbugs.BugReporter;
+import edu.umd.cs.findbugs.BugReporterObserver;
+import edu.umd.cs.findbugs.FindBugs2;
+import edu.umd.cs.findbugs.Project;
+import edu.umd.cs.findbugs.ProjectStats;
+import edu.umd.cs.findbugs.SortedBugCollection;
 import edu.umd.cs.findbugs.classfile.ClassDescriptor;
-// import edu.umd.cs.findbugs.classfile.IErrorLogger;
 import edu.umd.cs.findbugs.classfile.MethodDescriptor;
-
-// import java.io.File;
-import java.util.Objects;
-
-// import javax.annotation.CheckForNull;
-import java.util.ArrayList;
+import edu.umd.cs.findbugs.config.UserPreferences;
 
 public class SpotBugsAnalyzer implements IAnalysisTool {
-    private final String name = "SpotBugs";
+    @Override
+    public String getName() {
+        return "SpotBugs";
+    }
 
     @Override
     public ToolResult analyze(String projectPath) throws AnalysisException {
-        ToolResult result = new ToolResult();
-        ArrayList<String> pDirs = new ArrayList<>();
-        pDirs.add(projectPath);
-
-        try (FindBugs2 findBugs = new FindBugs2()) {
-            // Init project
+        try (FindBugs2 findBugs = new FindBugs2();) {
             Project project = new Project();
-            project.addFile(projectPath);
-            project.addSourceDirs(pDirs);
-            
-            // Setup FindBugs
+            // Add project sources/files using string paths
+            project.addFile(projectPath); // Assuming projectPath points to a jar, class file, or directory of classes
+            // If projectPath is a source directory, use project.addSourceDir(projectPath);
+            // You might need more sophisticated logic depending on what projectPath represents.
+
+            CustomBugReporter reporter = new CustomBugReporter();
             findBugs.setProject(project);
-            findBugs.setBugReporter(new CustomBugReporter(result));
-            
-            // Finally start the analysis
+            findBugs.setBugReporter(reporter);
+            findBugs.setUserPreferences(UserPreferences.createDefaultUserPreferences());
             findBugs.execute();
-            
-            return result;
-            
+
+            return new ToolResult(
+                getName(),
+                reporter.getBugCount(),
+                0,
+                reporter.getMessages()
+            );
         } catch (Exception e) {
-            throw new AnalysisException(this.name + " analysis failed", e);
+            throw new AnalysisException("SpotBugs analysis failed"+ e.getMessage() + e.getCause(), e);
         }
     }
-
-    @Override
-    public String getName() {
-        return this.name;
-    }
-
     private static class CustomBugReporter implements BugReporter {
-        private final ToolResult result;
-        private int errorCount = 0;
-        private int warningCount = 0;
+        private final List<String> messages;
+        private final List<BugInstance> bugs;
 
-        public CustomBugReporter(ToolResult result) {
-            this.result = Objects.requireNonNull(result);
+        public CustomBugReporter() {
+            this.messages = new ArrayList<>();
+            this.bugs = new ArrayList<>();
         }
 
         @Override
         public void reportBug(BugInstance bugInstance) {
-            if (bugInstance.getPriority() <= Priorities.NORMAL_PRIORITY) {
-                errorCount++;
-            } else {
-                warningCount++;
-            }
-            result.setErrorCount(errorCount);
-            result.setWarningCount(warningCount);
+            bugs.add(bugInstance);
+            // Format message similar to PMD for consistency
+            String filename = bugInstance.getPrimarySourceLineAnnotation().getSourcePath();
+            int line = bugInstance.getPrimarySourceLineAnnotation().getStartLine();
+            String message = String.format("%s:%d - %s (%s)",
+                    filename,
+                    line,
+                    bugInstance.getMessage(),
+                    bugInstance.getType()); // Use bug type as equivalent to rule name
+            messages.add(message);
+        }
+
+        public int getBugCount() {
+            return bugs.size();
+        }
+
+        public List<String> getMessages() {
+            return messages;
         }
 
         @Override public void observeClass(ClassDescriptor classDescriptor) {}
@@ -90,10 +102,11 @@ public class SpotBugsAnalyzer implements IAnalysisTool {
         @Override public void addObserver(BugReporterObserver observer) {}
         @Override public void setPriorityThreshold(int threshold) {}
         @Override public ProjectStats getProjectStats() {
-            return null;
+            return new ProjectStats();
         }
         @Override public BugCollection getBugCollection() {
-            return null;
+            // Potentially could return a BugCollection constructed from 'bugs' list if needed elsewhere
+            return new SortedBugCollection(); // Return an empty one for now, or build one from 'bugs'
         }
         @Override public void setErrorVerbosity(int level) {}
         @Override public void reportSkippedAnalysis(MethodDescriptor method) {}

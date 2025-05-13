@@ -3,11 +3,17 @@ package org.SNA.core;
 import java.util.List;
 
 public class ToolResult {
+    private String toolName;
     private int errorCount = 0;
     private int warningCount = 0;
     private List<String> messages;
 
-    
+    public ToolResult(String toolName, int errorCount, int warningCount, List<String> messages) {
+        this.toolName = toolName;
+        this.errorCount = errorCount;
+        this.warningCount = warningCount;
+        this.messages = messages;
+    }
 
     public void setErrorCount(int value) {
         this.errorCount = value;
@@ -27,6 +33,10 @@ public class ToolResult {
 
     public List<String> getMessages() {
         return messages;
+    }
+
+    public String getToolName() {
+        return this.toolName;
     }
     
 }
