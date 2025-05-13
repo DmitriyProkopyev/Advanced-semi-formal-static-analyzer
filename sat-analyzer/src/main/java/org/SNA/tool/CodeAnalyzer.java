@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.SNA.analyzers.CheckstyleAnalyzer;
+import org.SNA.analyzers.PMDAnalyzer;
 import org.SNA.analyzers.SpotBugsAnalyzer;
 import org.SNA.core.ToolResult;
 import org.SNA.core.interfaces.IAnalysisTool;
@@ -21,7 +22,7 @@ public class CodeAnalyzer {
     
     private void initializeTools() {
         tools.add(new CheckstyleAnalyzer());
-        // tools.add(new PMDAnalyzer());
+        tools.add(new PMDAnalyzer());
         tools.add(new SpotBugsAnalyzer());
         // tools.add(new SemgrepAnalyzer());
         // tools.add(new OpenAPIAnalyzer());

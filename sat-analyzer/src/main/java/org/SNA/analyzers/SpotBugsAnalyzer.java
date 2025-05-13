@@ -1,25 +1,27 @@
 package org.SNA.analyzers;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.SNA.core.ToolResult;
 import org.SNA.core.exceptions.AnalysisException;
 import org.SNA.core.interfaces.IAnalysisTool;
-
-import edu.umd.cs.findbugs.BugCollection;
-import edu.umd.cs.findbugs.BugInstance;
-import edu.umd.cs.findbugs.BugReporter;
-import edu.umd.cs.findbugs.BugReporterObserver;
-import edu.umd.cs.findbugs.FindBugs2;
-import edu.umd.cs.findbugs.Project;
-import edu.umd.cs.findbugs.ProjectStats;
-import edu.umd.cs.findbugs.SortedBugCollection;
-import edu.umd.cs.findbugs.classfile.ClassDescriptor;
-import edu.umd.cs.findbugs.classfile.MethodDescriptor;
-import edu.umd.cs.findbugs.config.UserPreferences;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 public class SpotBugsAnalyzer implements IAnalysisTool {
+
     @Override
     public String getName() {
         return "SpotBugs";
@@ -27,88 +29,68 @@ public class SpotBugsAnalyzer implements IAnalysisTool {
 
     @Override
     public ToolResult analyze(String projectPath) throws AnalysisException {
-        try (FindBugs2 findBugs = new FindBugs2();) {
-            Project project = new Project();
-            // Add project sources/files using string paths
-            project.addFile(projectPath); // Assuming projectPath points to a jar, class file, or directory of classes
-            // If projectPath is a source directory, use project.addSourceDir(projectPath);
-            // You might need more sophisticated logic depending on what projectPath represents.
+        try {
+            // Создаём временный XML-файл для отчёта
+            Path outputXml = Files.createTempFile("spotbugs-report", ".xml");
+            runSpotBugs(projectPath, outputXml.toString());
 
-            CustomBugReporter reporter = new CustomBugReporter();
-            findBugs.setProject(project);
-            findBugs.setBugReporter(reporter);
-            findBugs.setUserPreferences(UserPreferences.createDefaultUserPreferences());
-            findBugs.execute();
-
-            return new ToolResult(
-                getName(),
-                reporter.getBugCount(),
-                0,
-                reporter.getMessages()
-            );
+            List<String> messages = parseXmlReport(outputXml.toFile());
+            return new ToolResult(getName(), messages.size(), 0, messages);
+        } catch (IOException | InterruptedException e) {
+            throw new AnalysisException("SpotBugs execution failed: " + e.getMessage(), e);
         } catch (Exception e) {
-            throw new AnalysisException("SpotBugs analysis failed"+ e.getMessage() + e.getCause(), e);
+            throw new AnalysisException("Failed to parse SpotBugs report: " + e.getMessage() + e.getCause(), e);
         }
     }
-    private static class CustomBugReporter implements BugReporter {
-        private final List<String> messages;
-        private final List<BugInstance> bugs;
 
-        public CustomBugReporter() {
-            this.messages = new ArrayList<>();
-            this.bugs = new ArrayList<>();
-        }
+    private void runSpotBugs(String targetPath, String outputXml) throws IOException, InterruptedException {
+        List<String> command = Arrays.asList(
+                "spotbugs",
+                "-textui",
+                "-effort:max",
+                "-low",
+                "-xml",
+                "-output", outputXml,
+                targetPath
+        );
 
-        @Override
-        public void reportBug(BugInstance bugInstance) {
-            bugs.add(bugInstance);
-            // Format message similar to PMD for consistency
-            String filename = bugInstance.getPrimarySourceLineAnnotation().getSourcePath();
-            int line = bugInstance.getPrimarySourceLineAnnotation().getStartLine();
-            String message = String.format("%s:%d - %s (%s)",
-                    filename,
-                    line,
-                    bugInstance.getMessage(),
-                    bugInstance.getType()); // Use bug type as equivalent to rule name
-            messages.add(message);
+        ProcessBuilder pb = new ProcessBuilder(command);
+        pb.redirectErrorStream(true);
+        Process process = pb.start();
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+            reader.lines().forEach(System.out::println); // Лог в консоль
         }
 
-        public int getBugCount() {
-            return bugs.size();
+        int exitCode = process.waitFor();
+        if (exitCode != 0) {
+            throw new RuntimeException("SpotBugs exited with code " + exitCode);
+        }
+    }
+
+    private List<String> parseXmlReport(File xmlFile) throws Exception {
+        List<String> messages = new ArrayList<>();
+
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document doc = builder.parse(xmlFile);
+
+        NodeList bugInstances = doc.getElementsByTagName("BugInstance");
+
+        for (int i = 0; i < bugInstances.getLength(); i++) {
+            Element bug = (Element) bugInstances.item(i);
+            String type = bug.getAttribute("type");
+            String message = bug.getAttribute("message");
+            String category = bug.getAttribute("category");
+
+            Element sourceLine = (Element) bug.getElementsByTagName("SourceLine").item(0);
+            String file = sourceLine.getAttribute("sourcepath");
+            String line = sourceLine.getAttribute("start");
+
+            String formatted = String.format("%s:%s - %s (%s)", file, line, type, category, message);
+            messages.add(formatted);
         }
 
-        public List<String> getMessages() {
-            return messages;
-        }
-
-        @Override public void observeClass(ClassDescriptor classDescriptor) {}
-        @Override public void logError(String message) {
-            System.err.println("SpotBugs Error: " + message);
-        }
-        @Override public void logError(String message, Throwable e) {
-            System.err.println("SpotBugs Error: " + message);
-            e.printStackTrace();
-        }
-        @Override public void reportMissingClass(ClassNotFoundException ex) {
-            logError("Missing class: " + ex.getMessage());
-        }
-        @Override public void reportMissingClass(ClassDescriptor classDescriptor) {
-            logError("Missing class: " + classDescriptor.getClassName());
-        }
-        @Override public void finish() {
-            System.out.println("SpotBugs analysis completed");
-        }
-        @Override public void reportQueuedErrors() {}
-        @Override public void addObserver(BugReporterObserver observer) {}
-        @Override public void setPriorityThreshold(int threshold) {}
-        @Override public ProjectStats getProjectStats() {
-            return new ProjectStats();
-        }
-        @Override public BugCollection getBugCollection() {
-            // Potentially could return a BugCollection constructed from 'bugs' list if needed elsewhere
-            return new SortedBugCollection(); // Return an empty one for now, or build one from 'bugs'
-        }
-        @Override public void setErrorVerbosity(int level) {}
-        @Override public void reportSkippedAnalysis(MethodDescriptor method) {}
+        return messages;
     }
 }
