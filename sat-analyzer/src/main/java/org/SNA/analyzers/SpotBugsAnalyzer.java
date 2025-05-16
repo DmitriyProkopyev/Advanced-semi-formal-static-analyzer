@@ -21,7 +21,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 public class SpotBugsAnalyzer implements IAnalysisTool {
-
     @Override
     public String getName() {
         return "SpotBugs";
@@ -30,7 +29,7 @@ public class SpotBugsAnalyzer implements IAnalysisTool {
     @Override
     public ToolResult analyze(String projectPath) throws AnalysisException {
         try {
-            // Создаём временный XML-файл для отчёта
+            // Temp XML file for report
             Path outputXml = Files.createTempFile("spotbugs-report", ".xml");
             runSpotBugs(projectPath, outputXml.toString());
 
@@ -59,7 +58,7 @@ public class SpotBugsAnalyzer implements IAnalysisTool {
         Process process = pb.start();
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-            reader.lines().forEach(System.out::println); // Лог в консоль
+            reader.lines().forEach(System.out::println);
         }
 
         int exitCode = process.waitFor();
@@ -72,6 +71,7 @@ public class SpotBugsAnalyzer implements IAnalysisTool {
         List<String> messages = new ArrayList<>();
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true); // Fix security issue
         DocumentBuilder builder = factory.newDocumentBuilder();
         Document doc = builder.parse(xmlFile);
 
