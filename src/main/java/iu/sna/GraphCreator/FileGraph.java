@@ -375,31 +375,45 @@ public class FileGraph {
 //        removeZeroWeightEdges();
   }
 
+  private void chechEdgeVertexExistence(
+          Vertex from, Vertex to, Edge edge,
+          Path pFrom, Path pTo) {
+
+    if (from == null) {
+      from = addVertex(
+              pFrom.getFileName()
+                      .toString(), pFrom
+      );
+    }
+
+
+    if (to == null) {
+      to = addVertex(
+              pTo.getFileName()
+                      .toString(), pTo
+      );
+
+    }
+    if (edge == null) {
+      edge = addEdge(from, to);
+    }
+  }
+
+  // TODO: в будущем фориков по всем языка пройтись + нужно распарсить json
+//  файл как -то и сгруппировать...
   public void applyLanguageSpecificAnalisis() throws IOException {
     List<Map.Entry<Path, Path>> toolOutput =
             languageAnalyzerService.AnalyzeDependencies(
                     "python",
-                            List.of("/home/aziz/test_ground/pydeps")
+                    List.of("/home/aziz/test_ground/pydeps")
             );
-    for (Map.Entry<Path,Path> entry : toolOutput) {
+    for (Map.Entry<Path, Path> entry : toolOutput) {
       Path pFrom = entry.getKey();
       Path pTo = entry.getValue();
       Vertex from = findVertex(pFrom);
-
-      if (from == null) {
-        from  = addVertex(pFrom.getFileName().toString(), pFrom);
-      }
-
       Vertex to = findVertex(pTo);
-
-      if (to == null) {
-        to = addVertex(pTo.getFileName().toString(), pTo);
-
-      }
       Edge edge = findEdge(from, to);
-      if (edge == null) {
-        edge = addEdge(from, to);
-      }
+      chechEdgeVertexExistence(from, to, edge, pFrom, pTo);
       // пока добавляем + 1
       edge.setCompoundWeight(edge.getCompoundWeight() + 1);
     }
