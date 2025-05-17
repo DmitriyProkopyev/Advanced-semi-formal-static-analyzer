@@ -353,7 +353,12 @@ public class FileGraph {
         parseFiles();
         parseCommits();
         updateCompoundPower();
-        removeZeroWeightEdges();
+        applyLanguageSpecificAnalisis();
+//        removeZeroWeightEdges();
+    }
+
+    private void applyLanguageSpecificAnalisis() {
+
     }
 
     /**

@@ -4,87 +4,126 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="67c08764-5bf0-49ed-8ab3-92d7bb81492e" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/java/iu/sna/GraphCreator/GitCommitParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/iu/sna/GraphCreator/GitCommitParser.java" afterDir="false" />
+    <list default="true" id="f2991888-d2c8-4e98-83e9-ab62d3414d31" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/iu/sna/AdvancedSemiFormalStaticAnalyzerApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/iu/sna/AdvancedSemiFormalStaticAnalyzerApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/iu/sna/GraphCreator/FileGraph.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/iu/sna/GraphCreator/FileGraph.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 0
-}</component>
-  <component name="ProjectId" id="2wtnAICjlGNVABJtk0dY32wI98U" />
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 1
+}]]></component>
+  <component name="ProjectId" id="2xCxlrrovZM4KTM80izBmpJ6y63" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Application.Main.executor": "Run",
+    "Maven.sna [clean,install].executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "implement__graph",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/home/aziz/Projects/Advanced-semi-formal-static-analyzer/src/main/java/iu/sna",
+    "Spring Boot.AdvancedSemiFormalStaticAnalyzerApplication (1).executor": "Run",
+    "Spring Boot.AdvancedSemiFormalStaticAnalyzerApplication.executor": "Run",
+    "git-widget-placeholder": "implement__language__specific__analsis",
+    "last_opened_file_path": "/home/aziz/Projects/Advanced-semi-formal-static-analyzer",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.0",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/main/java/iu/sna" />
-    </key>
-  </component>
-  <component name="RunManager">
-    <configuration default="true" type="JetRunConfigurationType">
-      <module name="Advanced-semi-formal-static-analyzer" />
+  <component name="RunManager" selected="Spring Boot.AdvancedSemiFormalStaticAnalyzerApplication (1)">
+    <configuration name="AdvancedSemiFormalStaticAnalyzerApplication (1)" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <module name="sna" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="iu.sna.AdvancedSemiFormalStaticAnalyzerApplication" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="iu.sna.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
-      <module name="Advanced-semi-formal-static-analyzer" />
-      <option name="filePath" />
-      <method v="2" />
-    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Spring Boot.AdvancedSemiFormalStaticAnalyzerApplication (1)" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-fdfe4dae3a2d-intellij.indexing.shared.core-IU-243.21565.193" />
-        <option value="bundled-js-predefined-d6986cc7102b-e768b9ed790e-JavaScript-IU-243.21565.193" />
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.25410.129" />
+        <option value="bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-IU-251.25410.129" />
       </set>
     </attachedChunks>
   </component>
-  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="67c08764-5bf0-49ed-8ab3-92d7bb81492e" name="Changes" comment="" />
-      <created>1746869593207</created>
+      <changelist id="f2991888-d2c8-4e98-83e9-ab62d3414d31" name="Changes" comment="" />
+      <created>1747456010847</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1746869593207</updated>
-      <workItem from="1746869595452" duration="1160000" />
-      <workItem from="1746870768983" duration="99000" />
-      <workItem from="1746870906756" duration="3312000" />
+      <updated>1747456010847</updated>
+      <workItem from="1747456013109" duration="9512000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
-  <component name="XSLT-Support.FileAssociations.UIState">
-    <expand />
-    <select />
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/iu/sna/AdvancedSemiFormalStaticAnalyzerApplication.java</url>
+          <line>23</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/iu/sna/GraphCreator/LanguageAnalyzer/PydepsAnalyzer.java</url>
+          <line>35</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/iu/sna/GraphCreator/LanguageAnalyzer/PydepsAnalyzer.java</url>
+          <line>51</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
