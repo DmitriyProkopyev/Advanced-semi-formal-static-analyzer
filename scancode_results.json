@@ -1,0 +1,855 @@
+{
+  "headers": [
+    {
+      "tool_name": "scancode-toolkit",
+      "tool_version": "32.3.3",
+      "options": {
+        "input": [
+          "/home/segfault/VSCode/Code/SPRING_25/SNA/Advanced-semi-formal-static-analyzer/INSPECTION/stack_inspection"
+        ],
+        "--json-pp": "/home/segfault/VSCode/Code/SPRING_25/SNA/Advanced-semi-formal-static-analyzer/INSPECTION/stack_inspection/scancode_results.json",
+        "--package": true
+      },
+      "notice": "Generated with ScanCode and provided on an \"AS IS\" BASIS, WITHOUT WARRANTIES\nOR CONDITIONS OF ANY KIND, either express or implied. No content created from\nScanCode should be considered or used as legal advice. Consult an Attorney\nfor any legal advice.\nScanCode is a free software code scanning tool from nexB Inc. and others.\nVisit https://github.com/nexB/scancode-toolkit/ for support and download.",
+      "start_timestamp": "2025-05-17T123800.371454",
+      "end_timestamp": "2025-05-17T123803.081583",
+      "output_format_version": "4.0.0",
+      "duration": 2.7101452350616455,
+      "message": null,
+      "errors": [],
+      "warnings": [],
+      "extra_data": {
+        "system_environment": {
+          "operating_system": "linux",
+          "cpu_architecture": "64",
+          "platform": "Linux-6.12.20-amd64-x86_64-with-glibc2.41",
+          "platform_version": "#1 SMP PREEMPT_DYNAMIC Kali 6.12.20-1kali1 (2025-03-26)",
+          "python_version": "3.13.2 (main, Mar 13 2025, 14:29:07) [GCC 14.2.0]"
+        },
+        "spdx_license_list_version": "3.26",
+        "files_count": 17
+      }
+    }
+  ],
+  "packages": [
+    {
+      "type": "maven",
+      "namespace": "iu",
+      "name": "sna",
+      "version": "0.0.1-SNAPSHOT",
+      "qualifiers": {},
+      "subpath": null,
+      "primary_language": "Java",
+      "description": "Advanced-semi-formal-static-analyzer",
+      "release_date": null,
+      "parties": [
+        {
+          "type": "person",
+          "role": "developer",
+          "name": null,
+          "email": null,
+          "url": null
+        }
+      ],
+      "keywords": [],
+      "homepage_url": null,
+      "download_url": null,
+      "size": null,
+      "sha1": null,
+      "md5": null,
+      "sha256": null,
+      "sha512": null,
+      "bug_tracking_url": null,
+      "code_view_url": null,
+      "vcs_url": null,
+      "copyright": null,
+      "holder": null,
+      "declared_license_expression": "unknown",
+      "declared_license_expression_spdx": "LicenseRef-scancode-unknown",
+      "license_detections": [
+        {
+          "license_expression": "unknown",
+          "license_expression_spdx": "LicenseRef-scancode-unknown",
+          "matches": [
+            {
+              "license_expression": "unknown",
+              "license_expression_spdx": "LicenseRef-scancode-unknown",
+              "from_file": "stack_inspection/pom.xml",
+              "start_line": 1,
+              "end_line": 1,
+              "matcher": "5-undetected",
+              "score": 100.0,
+              "matched_length": 1,
+              "match_coverage": 100.0,
+              "rule_relevance": 100,
+              "rule_identifier": "package-manifest-unknown-d7c2a9244fde232fe8332b01c6977238cc7e3993",
+              "rule_url": "https://github.com/nexB/scancode-toolkit/tree/develop/src/licensedcode/data/rules/package-manifest-unknown-d7c2a9244fde232fe8332b01c6977238cc7e3993",
+              "matched_text": "license - {}"
+            }
+          ],
+          "identifier": "unknown-48c7c5f1-4add-d0ba-1a3a-763b17437c7a"
+        }
+      ],
+      "other_license_expression": null,
+      "other_license_expression_spdx": null,
+      "other_license_detections": [],
+      "extracted_license_statement": "- {}\n",
+      "notice_text": null,
+      "source_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?classifier=sources"
+      ],
+      "is_private": false,
+      "is_virtual": false,
+      "extra_data": {},
+      "repository_homepage_url": "https://repo1.maven.org/maven2/iu/sna/0.0.1-SNAPSHOT/",
+      "repository_download_url": "https://repo1.maven.org/maven2/iu/sna/0.0.1-SNAPSHOT/sna-0.0.1-SNAPSHOT.jar",
+      "api_data_url": "https://repo1.maven.org/maven2/iu/sna/0.0.1-SNAPSHOT/sna-0.0.1-SNAPSHOT.pom",
+      "package_uid": "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa",
+      "datafile_paths": [
+        "stack_inspection/pom.xml"
+      ],
+      "datasource_ids": [
+        "maven_pom"
+      ],
+      "purl": "pkg:maven/iu/sna@0.0.1-SNAPSHOT"
+    }
+  ],
+  "dependencies": [
+    {
+      "purl": "pkg:maven/org.springframework.boot/spring-boot-starter",
+      "extracted_requirement": null,
+      "scope": "compile",
+      "is_runtime": false,
+      "is_optional": true,
+      "is_pinned": false,
+      "is_direct": true,
+      "resolved_package": {},
+      "extra_data": {},
+      "dependency_uid": "pkg:maven/org.springframework.boot/spring-boot-starter?uuid=8f1afae3-ec6d-4d72-9eb4-c6a1c3d195a7",
+      "for_package_uid": "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa",
+      "datafile_path": "stack_inspection/pom.xml",
+      "datasource_id": "maven_pom"
+    },
+    {
+      "purl": "pkg:maven/org.projectlombok/lombok",
+      "extracted_requirement": null,
+      "scope": "compile",
+      "is_runtime": false,
+      "is_optional": true,
+      "is_pinned": false,
+      "is_direct": true,
+      "resolved_package": {},
+      "extra_data": {},
+      "dependency_uid": "pkg:maven/org.projectlombok/lombok?uuid=ad97273f-f1e5-4000-90bd-56583b2000c6",
+      "for_package_uid": "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa",
+      "datafile_path": "stack_inspection/pom.xml",
+      "datasource_id": "maven_pom"
+    },
+    {
+      "purl": "pkg:maven/org.eclipse.jgit/org.eclipse.jgit@7.2.0.202503040940-r",
+      "extracted_requirement": "7.2.0.202503040940-r",
+      "scope": "compile",
+      "is_runtime": false,
+      "is_optional": true,
+      "is_pinned": true,
+      "is_direct": true,
+      "resolved_package": {},
+      "extra_data": {},
+      "dependency_uid": "pkg:maven/org.eclipse.jgit/org.eclipse.jgit@7.2.0.202503040940-r?uuid=7eb0e1cc-1754-4b5f-b388-bc2d97aae232",
+      "for_package_uid": "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa",
+      "datafile_path": "stack_inspection/pom.xml",
+      "datasource_id": "maven_pom"
+    },
+    {
+      "purl": "pkg:maven/dev.langchain4j/langchain4j@1.0.0-beta3",
+      "extracted_requirement": "1.0.0-beta3",
+      "scope": "compile",
+      "is_runtime": false,
+      "is_optional": true,
+      "is_pinned": true,
+      "is_direct": true,
+      "resolved_package": {},
+      "extra_data": {},
+      "dependency_uid": "pkg:maven/dev.langchain4j/langchain4j@1.0.0-beta3?uuid=40bf7759-6ef1-4df3-944a-118db51b846a",
+      "for_package_uid": "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa",
+      "datafile_path": "stack_inspection/pom.xml",
+      "datasource_id": "maven_pom"
+    },
+    {
+      "purl": "pkg:maven/dev.langchain4j/langchain4j-core@1.0.0-beta3",
+      "extracted_requirement": "1.0.0-beta3",
+      "scope": "compile",
+      "is_runtime": false,
+      "is_optional": true,
+      "is_pinned": true,
+      "is_direct": true,
+      "resolved_package": {},
+      "extra_data": {},
+      "dependency_uid": "pkg:maven/dev.langchain4j/langchain4j-core@1.0.0-beta3?uuid=e78d4c32-73ad-4310-9923-5770859cae1d",
+      "for_package_uid": "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa",
+      "datafile_path": "stack_inspection/pom.xml",
+      "datasource_id": "maven_pom"
+    },
+    {
+      "purl": "pkg:maven/dev.langchain4j/langchain4j-google-ai-gemini@1.0.0-beta3",
+      "extracted_requirement": "1.0.0-beta3",
+      "scope": "compile",
+      "is_runtime": false,
+      "is_optional": true,
+      "is_pinned": true,
+      "is_direct": true,
+      "resolved_package": {},
+      "extra_data": {},
+      "dependency_uid": "pkg:maven/dev.langchain4j/langchain4j-google-ai-gemini@1.0.0-beta3?uuid=f48b0eff-51f2-4fd9-8374-db13aac11808",
+      "for_package_uid": "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa",
+      "datafile_path": "stack_inspection/pom.xml",
+      "datasource_id": "maven_pom"
+    },
+    {
+      "purl": "pkg:pypi/scancode-toolkit@32.3.3",
+      "extracted_requirement": "scancode-toolkit==32.3.3",
+      "scope": "install",
+      "is_runtime": true,
+      "is_optional": false,
+      "is_pinned": true,
+      "is_direct": true,
+      "resolved_package": {},
+      "extra_data": {
+        "is_editable": false,
+        "link": null,
+        "hash_options": [],
+        "is_constraint": false,
+        "is_archive": null,
+        "is_wheel": false,
+        "is_url": null,
+        "is_vcs_url": null,
+        "is_name_at_url": false,
+        "is_local_path": null
+      },
+      "dependency_uid": "pkg:pypi/scancode-toolkit@32.3.3?uuid=611ffa5f-ebbf-4ac9-836f-9db4e089171a",
+      "for_package_uid": null,
+      "datafile_path": "stack_inspection/requirements.txt",
+      "datasource_id": "pip_requirements"
+    }
+  ],
+  "files": [
+    {
+      "path": "stack_inspection",
+      "type": "directory",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/pom.xml",
+      "type": "file",
+      "package_data": [
+        {
+          "type": "maven",
+          "namespace": "iu",
+          "name": "sna",
+          "version": "0.0.1-SNAPSHOT",
+          "qualifiers": {},
+          "subpath": null,
+          "primary_language": "Java",
+          "description": "Advanced-semi-formal-static-analyzer",
+          "release_date": null,
+          "parties": [
+            {
+              "type": "person",
+              "role": "developer",
+              "name": null,
+              "email": null,
+              "url": null
+            }
+          ],
+          "keywords": [],
+          "homepage_url": null,
+          "download_url": null,
+          "size": null,
+          "sha1": null,
+          "md5": null,
+          "sha256": null,
+          "sha512": null,
+          "bug_tracking_url": null,
+          "code_view_url": null,
+          "vcs_url": null,
+          "copyright": null,
+          "holder": null,
+          "declared_license_expression": "unknown",
+          "declared_license_expression_spdx": "LicenseRef-scancode-unknown",
+          "license_detections": [
+            {
+              "license_expression": "unknown",
+              "license_expression_spdx": "LicenseRef-scancode-unknown",
+              "matches": [
+                {
+                  "license_expression": "unknown",
+                  "license_expression_spdx": "LicenseRef-scancode-unknown",
+                  "from_file": "stack_inspection/pom.xml",
+                  "start_line": 1,
+                  "end_line": 1,
+                  "matcher": "5-undetected",
+                  "score": 100.0,
+                  "matched_length": 1,
+                  "match_coverage": 100.0,
+                  "rule_relevance": 100,
+                  "rule_identifier": "package-manifest-unknown-d7c2a9244fde232fe8332b01c6977238cc7e3993",
+                  "rule_url": "https://github.com/nexB/scancode-toolkit/tree/develop/src/licensedcode/data/rules/package-manifest-unknown-d7c2a9244fde232fe8332b01c6977238cc7e3993",
+                  "matched_text": "license - {}"
+                }
+              ],
+              "identifier": "unknown-48c7c5f1-4add-d0ba-1a3a-763b17437c7a"
+            }
+          ],
+          "other_license_expression": null,
+          "other_license_expression_spdx": null,
+          "other_license_detections": [],
+          "extracted_license_statement": "- {}\n",
+          "notice_text": null,
+          "source_packages": [
+            "pkg:maven/iu/sna@0.0.1-SNAPSHOT?classifier=sources"
+          ],
+          "file_references": [],
+          "is_private": false,
+          "is_virtual": false,
+          "extra_data": {},
+          "dependencies": [
+            {
+              "purl": "pkg:maven/org.springframework.boot/spring-boot-starter",
+              "extracted_requirement": null,
+              "scope": "compile",
+              "is_runtime": false,
+              "is_optional": true,
+              "is_pinned": false,
+              "is_direct": true,
+              "resolved_package": {},
+              "extra_data": {}
+            },
+            {
+              "purl": "pkg:maven/org.projectlombok/lombok",
+              "extracted_requirement": null,
+              "scope": "compile",
+              "is_runtime": false,
+              "is_optional": true,
+              "is_pinned": false,
+              "is_direct": true,
+              "resolved_package": {},
+              "extra_data": {}
+            },
+            {
+              "purl": "pkg:maven/org.eclipse.jgit/org.eclipse.jgit@7.2.0.202503040940-r",
+              "extracted_requirement": "7.2.0.202503040940-r",
+              "scope": "compile",
+              "is_runtime": false,
+              "is_optional": true,
+              "is_pinned": true,
+              "is_direct": true,
+              "resolved_package": {},
+              "extra_data": {}
+            },
+            {
+              "purl": "pkg:maven/dev.langchain4j/langchain4j@1.0.0-beta3",
+              "extracted_requirement": "1.0.0-beta3",
+              "scope": "compile",
+              "is_runtime": false,
+              "is_optional": true,
+              "is_pinned": true,
+              "is_direct": true,
+              "resolved_package": {},
+              "extra_data": {}
+            },
+            {
+              "purl": "pkg:maven/dev.langchain4j/langchain4j-core@1.0.0-beta3",
+              "extracted_requirement": "1.0.0-beta3",
+              "scope": "compile",
+              "is_runtime": false,
+              "is_optional": true,
+              "is_pinned": true,
+              "is_direct": true,
+              "resolved_package": {},
+              "extra_data": {}
+            },
+            {
+              "purl": "pkg:maven/dev.langchain4j/langchain4j-google-ai-gemini@1.0.0-beta3",
+              "extracted_requirement": "1.0.0-beta3",
+              "scope": "compile",
+              "is_runtime": false,
+              "is_optional": true,
+              "is_pinned": true,
+              "is_direct": true,
+              "resolved_package": {},
+              "extra_data": {}
+            }
+          ],
+          "repository_homepage_url": "https://repo1.maven.org/maven2/iu/sna/0.0.1-SNAPSHOT/",
+          "repository_download_url": "https://repo1.maven.org/maven2/iu/sna/0.0.1-SNAPSHOT/sna-0.0.1-SNAPSHOT.jar",
+          "api_data_url": "https://repo1.maven.org/maven2/iu/sna/0.0.1-SNAPSHOT/sna-0.0.1-SNAPSHOT.pom",
+          "datasource_id": "maven_pom",
+          "purl": "pkg:maven/iu/sna@0.0.1-SNAPSHOT"
+        }
+      ],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/requirements.txt",
+      "type": "file",
+      "package_data": [
+        {
+          "type": "pypi",
+          "namespace": null,
+          "name": null,
+          "version": null,
+          "qualifiers": {},
+          "subpath": null,
+          "primary_language": "Python",
+          "description": null,
+          "release_date": null,
+          "parties": [],
+          "keywords": [],
+          "homepage_url": null,
+          "download_url": null,
+          "size": null,
+          "sha1": null,
+          "md5": null,
+          "sha256": null,
+          "sha512": null,
+          "bug_tracking_url": null,
+          "code_view_url": null,
+          "vcs_url": null,
+          "copyright": null,
+          "holder": null,
+          "declared_license_expression": null,
+          "declared_license_expression_spdx": null,
+          "license_detections": [],
+          "other_license_expression": null,
+          "other_license_expression_spdx": null,
+          "other_license_detections": [],
+          "extracted_license_statement": null,
+          "notice_text": null,
+          "source_packages": [],
+          "file_references": [],
+          "is_private": false,
+          "is_virtual": false,
+          "extra_data": {},
+          "dependencies": [
+            {
+              "purl": "pkg:pypi/scancode-toolkit@32.3.3",
+              "extracted_requirement": "scancode-toolkit==32.3.3",
+              "scope": "install",
+              "is_runtime": true,
+              "is_optional": false,
+              "is_pinned": true,
+              "is_direct": true,
+              "resolved_package": {},
+              "extra_data": {
+                "is_editable": false,
+                "link": null,
+                "hash_options": [],
+                "is_constraint": false,
+                "is_archive": null,
+                "is_wheel": false,
+                "is_url": null,
+                "is_vcs_url": null,
+                "is_name_at_url": false,
+                "is_local_path": null
+              }
+            }
+          ],
+          "repository_homepage_url": null,
+          "repository_download_url": null,
+          "api_data_url": null,
+          "datasource_id": "pip_requirements",
+          "purl": null
+        }
+      ],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/src",
+      "type": "directory",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/src/main",
+      "type": "directory",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/src/main/java",
+      "type": "directory",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/src/main/java/iu",
+      "type": "directory",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/src/main/java/iu/sna",
+      "type": "directory",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/src/main/java/iu/sna/stack_analysis",
+      "type": "directory",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/src/main/java/iu/sna/stack_analysis/analyzers",
+      "type": "directory",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/src/main/java/iu/sna/stack_analysis/analyzers/LinguistAnalyzer.java",
+      "type": "file",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/src/main/java/iu/sna/stack_analysis/analyzers/ScanCodeAnalyzer.java",
+      "type": "file",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/src/main/java/iu/sna/stack_analysis/core",
+      "type": "directory",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/src/main/java/iu/sna/stack_analysis/core/AnalysisResult.java",
+      "type": "file",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/src/main/java/iu/sna/stack_analysis/core/BasicAnalyzer.java",
+      "type": "file",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/src/main/java/iu/sna/stack_analysis/interfaces",
+      "type": "directory",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/src/main/java/iu/sna/stack_analysis/interfaces/IAnalyzer.java",
+      "type": "file",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/src/main/java/iu/sna/stack_analysis/tool",
+      "type": "directory",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/src/main/java/iu/sna/stack_analysis/tool/StackAnalyzer.java",
+      "type": "file",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/src/main/resources",
+      "type": "directory",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/src/main/resources/application.yaml",
+      "type": "file",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/src/test",
+      "type": "directory",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/src/test/java",
+      "type": "directory",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/target",
+      "type": "directory",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/target/test-classes",
+      "type": "directory",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/target/classes",
+      "type": "directory",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/target/classes/application.yaml",
+      "type": "file",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/target/classes/iu",
+      "type": "directory",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/target/classes/iu/sna",
+      "type": "directory",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/target/classes/iu/sna/stack_analysis",
+      "type": "directory",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/target/classes/iu/sna/stack_analysis/analyzers",
+      "type": "directory",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/target/classes/iu/sna/stack_analysis/analyzers/LinguistAnalyzer$1.class",
+      "type": "file",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/target/classes/iu/sna/stack_analysis/analyzers/LinguistAnalyzer.class",
+      "type": "file",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/target/classes/iu/sna/stack_analysis/analyzers/ScanCodeAnalyzer.class",
+      "type": "file",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/target/classes/iu/sna/stack_analysis/core",
+      "type": "directory",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/target/classes/iu/sna/stack_analysis/core/AnalysisResult.class",
+      "type": "file",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/target/classes/iu/sna/stack_analysis/core/BasicAnalyzer.class",
+      "type": "file",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/target/classes/iu/sna/stack_analysis/interfaces",
+      "type": "directory",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/target/classes/iu/sna/stack_analysis/interfaces/IAnalyzer.class",
+      "type": "file",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/target/classes/iu/sna/stack_analysis/tool",
+      "type": "directory",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/target/classes/iu/sna/stack_analysis/tool/StackAnalyzer.class",
+      "type": "file",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/target/generated-sources",
+      "type": "directory",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/target/generated-sources/annotations",
+      "type": "directory",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/target/generated-test-sources",
+      "type": "directory",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "stack_inspection/target/generated-test-sources/test-annotations",
+      "type": "directory",
+      "package_data": [],
+      "for_packages": [
+        "pkg:maven/iu/sna@0.0.1-SNAPSHOT?uuid=66f40150-ee1a-4f67-8111-5229625caaaa"
+      ],
+      "scan_errors": []
+    }
+  ]
+}

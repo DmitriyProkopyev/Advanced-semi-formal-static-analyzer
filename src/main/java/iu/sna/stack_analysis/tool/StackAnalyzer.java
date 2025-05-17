@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import iu.sna.stack_analysis.analyzers.LinguistAnalyzer;
+import iu.sna.stack_analysis.analyzers.ScanCodeAnalyzer;
 import iu.sna.stack_analysis.core.AnalysisResult;
 import iu.sna.stack_analysis.interfaces.IAnalyzer;
 
@@ -14,7 +15,7 @@ public class StackAnalyzer {
     
     public StackAnalyzer() {
         analyzers.add(new LinguistAnalyzer());
-        // analyzers.add(new ScanCodeAnalyzer());
+        analyzers.add(new ScanCodeAnalyzer());
         // analyzers.add(new AppInspectorAnalyzer());
     }
     
@@ -35,11 +36,27 @@ public class StackAnalyzer {
             return;
         }
 
+         // Chec if .git present
+        File gitDir = new File(args[0], ".git");
+        if (!gitDir.exists() || !gitDir.isDirectory()) {
+            System.err.println("Warning: .git directory not found. Please provide a git repo");
+            return;
+        }
+
         StackAnalyzer analyzer = new StackAnalyzer();
         AnalysisResult result = analyzer.analyzeProject(args[0]);
 
         // Visualize result
+        System.out.println("Languages found:");
         for (Map.Entry<String, Double> entry : result.getLanguagePercentages().entrySet()) {
+            System.out.println(entry.getKey() + " - " + entry.getValue());
+        }
+        System.out.println("\nTech stack found:");
+        for (Map.Entry<String, String> entry : result.getTechnologies().entrySet()) {
+            System.out.println(entry.getKey() + " - " + entry.getValue());
+        }
+        System.out.println("\nProject licenses:");
+        for (Map.Entry<String, String> entry : result.getLicenses().entrySet()) {
             System.out.println(entry.getKey() + " - " + entry.getValue());
         }
     }
