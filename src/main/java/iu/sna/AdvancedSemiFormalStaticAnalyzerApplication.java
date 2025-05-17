@@ -20,10 +20,6 @@ public class AdvancedSemiFormalStaticAnalyzerApplication {
   public static void main(String[] args) throws IOException {
     ConfigurableApplicationContext context = SpringApplication.run(
             iu.sna.AdvancedSemiFormalStaticAnalyzerApplication.class, args);
-    PydepsAnalyzer an = context.getBean(PydepsAnalyzer.class);
-    List <String> l = new ArrayList<>();
-    l.add("/home/aziz/test_ground/pydeps");
-    an.runTool(l);
   }
 }
 

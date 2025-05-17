@@ -1,30 +1,28 @@
 package iu.sna.GraphCreator.LanguageAnalyzer;
 
+import ch.qos.logback.core.joran.sanity.Pair;
 import iu.sna.GraphCreator.FileGraph;
+import org.eclipse.jgit.diff.ContentSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Component
 public class PydepsAnalyzer implements LanguageAnalyzer {
-  private final FileGraph fileGraph;
   @Value("${project.pythonVenv}")
   private String PATH_TO_VENV;
   private static final Pattern DEPENDENCY_PATTERN = Pattern.compile("(\\w+)" +
           "\\s*->\\s*(\\w+)\\s*\\[.*?\\];");
-  @Autowired
-  public PydepsAnalyzer(FileGraph graph) {
-    this.fileGraph = graph;
-  }
-
   public String runTool(List<String> fileParam) throws IOException {
     List<String> command = new ArrayList<>();
     command.add(PATH_TO_VENV + "/bin/pydeps");
@@ -57,16 +55,21 @@ public class PydepsAnalyzer implements LanguageAnalyzer {
   }
 
   @Override
-  public void analyzeDependencies(List<String> fileString) throws IOException {
+  public List<Map.Entry<Path,Path>> analyzeDependencies(List<String> fileString) throws IOException {
     String toolOutput = runTool(fileString);
     Matcher matcher = DEPENDENCY_PATTERN.matcher(toolOutput);
+    List<Map.Entry<Path, Path>> res = new ArrayList<>();
     while (matcher.find()) {
-      //
+     Path p1 = Paths.get(matcher.group(1));
+     Path p2 = Paths.get(matcher.group(2));
+     res.add(Map.entry(p1,p2));
+
     }
+    return res;
   }
 
   @Override
   public String getLanguage() {
-    return "";
+    return "python";
   }
 }

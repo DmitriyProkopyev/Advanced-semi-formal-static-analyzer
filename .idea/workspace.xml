@@ -5,11 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f2991888-d2c8-4e98-83e9-ab62d3414d31" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/iu/sna/AdvancedSemiFormalStaticAnalyzerApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/iu/sna/AdvancedSemiFormalStaticAnalyzerApplication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/iu/sna/GraphCreator/FileGraph.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/iu/sna/GraphCreator/FileGraph.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/iu/sna/GraphCreator/LanguageAnalyzer/LanguageAnalyzer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/iu/sna/GraphCreator/LanguageAnalyzer/LanguageAnalyzer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/iu/sna/GraphCreator/LanguageAnalyzer/LanguageAnalyzerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/iu/sna/GraphCreator/LanguageAnalyzer/LanguageAnalyzerService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/iu/sna/GraphCreator/LanguageAnalyzer/PydepsAnalyzer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/iu/sna/GraphCreator/LanguageAnalyzer/PydepsAnalyzer.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,9 +28,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 1
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
   <component name="ProjectId" id="2xCxlrrovZM4KTM80izBmpJ6y63" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="1" id="Add" />
@@ -60,6 +61,7 @@
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "preferences.keymap",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -98,7 +100,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1747456010847</updated>
-      <workItem from="1747456013109" duration="9512000" />
+      <workItem from="1747456013109" duration="9610000" />
+      <workItem from="1747477014130" duration="2608000" />
+      <workItem from="1747487841835" duration="351000" />
+      <workItem from="1747488206458" duration="80000" />
+      <workItem from="1747488296825" duration="57000" />
+      <workItem from="1747488413031" duration="1876000" />
     </task>
     <servers />
   </component>
@@ -109,18 +116,13 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/iu/sna/AdvancedSemiFormalStaticAnalyzerApplication.java</url>
-          <line>23</line>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/iu/sna/GraphCreator/LanguageAnalyzer/PydepsAnalyzer.java</url>
-          <line>35</line>
+          <line>33</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/iu/sna/GraphCreator/LanguageAnalyzer/PydepsAnalyzer.java</url>
-          <line>51</line>
+          <line>49</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
