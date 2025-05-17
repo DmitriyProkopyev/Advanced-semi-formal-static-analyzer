@@ -1,7 +1,0 @@
-# Python dependencies
-pypandoc>=1.4.0
-
-# Note: System-level dependencies must be installed separately. Ensure the following are available:
-# - Pandoc (the converter binary)
-# - A TeX engine with LuaLaTeX (e.g., texlive or basictex with luatex package)
-# - Noto Color Emoji font and TeX Gyre Termes (or another mainfont) installed on the system
