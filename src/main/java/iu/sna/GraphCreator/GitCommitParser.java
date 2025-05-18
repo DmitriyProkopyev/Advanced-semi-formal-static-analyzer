@@ -122,7 +122,7 @@ public final class GitCommitParser {
         return changedFiles;
       }
     } catch (IOException e) {
-      throw new RuntimeException("Error processing commit diff", e);
+      throw new RuntimeException("Error processing commit diff  ", e);
     }
   }
 }

@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 @Component
-public class MadgeAnalyzer implements LanguageAnalyzer {
+public class MadgeAnalyzerJavaScript implements LanguageAnalyzer {
   private static final Pattern DEPENDENCY_PATTERN =
           Pattern.compile("\"([^\"]*)\"\\s*->\\s*\"([^\"]*)\"");
 
@@ -36,7 +36,7 @@ public class MadgeAnalyzer implements LanguageAnalyzer {
 
   @Override
   public String getLanguage() {
-    return "typescript";
+    return "javascript";
   }
 
   private String runTool(List<String> fileParam) throws IOException {

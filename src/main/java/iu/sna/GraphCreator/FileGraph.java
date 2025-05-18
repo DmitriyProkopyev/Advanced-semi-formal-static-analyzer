@@ -388,7 +388,7 @@ public class FileGraph extends Graph<FileGraph.Vertex, FileGraph.Edge> {
       String language = fileInfo.getString("language");
       // did not see the language yet
       if (!res.containsKey(language)) {
-        res.put(language, new ArrayList<>());
+        res.put(language.toLowerCase(), new ArrayList<>());
       }
       res.get(language)
               .add(filepath);
@@ -439,8 +439,8 @@ public class FileGraph extends Graph<FileGraph.Vertex, FileGraph.Edge> {
         if (edge == null) {
           edge = addEdge(from, to);
         }
-        // пока добавляем + 1
-        edge.setCompoundWeight(edge.getCompoundWeight() + 3);
+        // пока *2 + 3
+        edge.setCompoundWeight(edge.getCompoundWeight()*2 + 3);
         System.out.println(from.getFilepath() + " -> " + to.getFilepath());
       }
     }
