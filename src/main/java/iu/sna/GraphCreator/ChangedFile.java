@@ -4,6 +4,8 @@ import lombok.Getter;
 
 import java.nio.file.Path;
 @Getter
+
+// this file for storing path/changed lines
 public class ChangedFile {
   Path path;
 
