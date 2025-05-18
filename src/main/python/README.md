@@ -4,7 +4,7 @@ A concise guide to installing and using `python-wrapper.py` — a unified interf
 
 * `token` — count characters and tokens using a Gemini tokenizer
 * `cluster` — cluster files based on a graph of file connections
-* `convert` — convert Markdown to PDF with emoji support
+* `convert` — convert Markdown to PDF
 
 ---
 
