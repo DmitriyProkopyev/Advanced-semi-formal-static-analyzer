@@ -1,6 +1,6 @@
 # Python Wrapper README
 
-A concise guide to installing and using `python-wrapper.py` — a unified interface for three functions:
+A concise guide to installing and using `python_wrapper.py` — a unified interface for three functions:
 
 * `token` — count characters and tokens using a Gemini tokenizer
 * `cluster` — cluster files based on a graph of file connections
@@ -33,13 +33,13 @@ A concise guide to installing and using `python-wrapper.py` — a unified interf
 
    ```
    project/
-   ├── python-wrapper.py  # the CLI wrapper script
+   ├── python_wrapper.py  # the CLI wrapper script
    ├── config.json        # tokenizer configuration
    ├── graph.json         # example config for clustering
    └── requirements.txt
    ```
 
-2. **config.json** for tokenization (`python-wrapper.token`):
+2. **config.json** for tokenization (`python_wrapper.token`):
 
    ```json
    {
@@ -49,7 +49,7 @@ A concise guide to installing and using `python-wrapper.py` — a unified interf
 
    *(Choose a model supported by your tokenizer.)*
 
-3. **graph.json** for graph clustering (`python-wrapper.cluster`):
+3. **graph.json** for graph clustering (`python_wrapper.cluster`):
 
    ```json
    {
@@ -71,15 +71,15 @@ A concise guide to installing and using `python-wrapper.py` — a unified interf
 
 ```bash
 # 1) Tokenization
-  python wrapper.py token <file1> <file2> ...
+  python python_wrapper.py token <file1> <file2> ...
 # → outputs a JSON array of objects: {"path": str, "chars": int, "tokens": int}
 
 # 2) Graph Clustering
- python wrapper.py cluster <config.json>
+ python python_wrapper.py cluster <config.json>
 # → outputs a JSON array of clusters, e.g. [["a.py","b.py"], ["c.py"]]
 
 # 3) Markdown → PDF
- python wrapper.py converting <input.md> <output.pdf>
+ python python_wrapper.py convert <input.md> <output.pdf>
 # → generates the PDF and prints {"status":"ok"}
 ```
 
