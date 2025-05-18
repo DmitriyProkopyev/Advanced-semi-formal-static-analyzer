@@ -1,5 +1,7 @@
 package iu.sna.GraphCreator.LanguageAnalyzer;
 
+import org.springframework.stereotype.Component;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -10,10 +12,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+@Component
 public class MadgeAnalyzer implements LanguageAnalyzer {
-  private static final Pattern DEPENDENCY_PATTERN = Pattern.compile("(\\w+)" +
-          "\\s*->\\s*(\\w+)\\s*\\[.*?\\];");
+  private static final Pattern DEPENDENCY_PATTERN =
+          Pattern.compile("\"([^\"]*)\"\\s*->\\s*\"([^\"]*)\"");
 
   @Override
   public List<Map.Entry<Path, Path>> analyzeDependencies(
@@ -34,7 +36,7 @@ public class MadgeAnalyzer implements LanguageAnalyzer {
 
   @Override
   public String getLanguage() {
-    return "typscript/javascript";
+    return "typescript";
   }
 
   private String runTool(List<String> fileParam) throws IOException {

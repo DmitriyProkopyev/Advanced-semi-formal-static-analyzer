@@ -375,37 +375,22 @@ public class FileGraph {
 //        removeZeroWeightEdges();
   }
 
-  private void chechEdgeVertexExistence(
-          Vertex from, Vertex to, Edge edge,
-          Path pFrom, Path pTo) {
 
-    if (from == null) {
-      from = addVertex(
-              pFrom.getFileName()
-                      .toString(), pFrom
-      );
-    }
-
-
-    if (to == null) {
-      to = addVertex(
-              pTo.getFileName()
-                      .toString(), pTo
-      );
-
-    }
-    if (edge == null) {
-      edge = addEdge(from, to);
-    }
-  }
 
   // TODO: в будущем фориков по всем языка пройтись + нужно распарсить json
 //  файл как -то и сгруппировать...
+
+  /**
+   * Supported languages:
+   * - python
+   * -typescript/javascript
+   * @throws IOException
+   */
   public void applyLanguageSpecificAnalisis() throws IOException {
     List<Map.Entry<Path, Path>> toolOutput =
             languageAnalyzerService.AnalyzeDependencies(
-                    "python",
-                    List.of("/home/aziz/test_ground/pydeps")
+                    "typescript",
+                    List.of("/home/aziz/test_ground/dependency-cruiser")
             );
     for (Map.Entry<Path, Path> entry : toolOutput) {
       Path pFrom = entry.getKey();
@@ -413,9 +398,27 @@ public class FileGraph {
       Vertex from = findVertex(pFrom);
       Vertex to = findVertex(pTo);
       Edge edge = findEdge(from, to);
-      chechEdgeVertexExistence(from, to, edge, pFrom, pTo);
+      if (from == null) {
+        from= addVertex(
+                pFrom.getFileName()
+                        .toString(), pFrom
+        );
+      }
+
+
+      if (to == null) {
+        to = addVertex(
+                pTo.getFileName()
+                        .toString(), pTo
+        );
+
+      }
+      if (edge == null) {
+        edge = addEdge(from, to);
+      }
       // пока добавляем + 1
       edge.setCompoundWeight(edge.getCompoundWeight() + 1);
+      System.out.println(from.getFilepath() + " -> " + to.getFilepath());
     }
 
   }

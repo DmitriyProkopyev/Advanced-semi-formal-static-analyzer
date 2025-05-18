@@ -1,6 +1,7 @@
 package iu.sna;
 
 import iu.sna.GraphCreator.FileGraph;
+import iu.sna.GraphCreator.LanguageAnalyzer.MadgeAnalyzer;
 import iu.sna.GraphCreator.LanguageAnalyzer.PydepsAnalyzer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -20,6 +21,10 @@ public class AdvancedSemiFormalStaticAnalyzerApplication {
   public static void main(String[] args) throws IOException {
     ConfigurableApplicationContext context = SpringApplication.run(
             iu.sna.AdvancedSemiFormalStaticAnalyzerApplication.class, args);
+//    MadgeAnalyzer madgeAnalyzer = context.getBean(MadgeAnalyzer.class);
+//    madgeAnalyzer.
+    FileGraph f = context.getBean(FileGraph.class);
+    f.applyLanguageSpecificAnalisis();
   }
 }
 
