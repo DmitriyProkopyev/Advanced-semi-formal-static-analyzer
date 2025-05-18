@@ -1,0 +1,13 @@
+{
+  "nodes": [
+    {"path": "a.py", "size": 100},
+    {"path": "b.py", "size": 200},
+    {"path": "c.py", "size": 50}
+  ],
+  "edges": [
+    {"src": "a.py", "dst": "b.py", "value": 0.9},
+    {"src": "b.py", "dst": "c.py", "value": 0.8}
+  ],
+  "N": 250,
+  "M": 2
+}

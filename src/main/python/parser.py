@@ -1,24 +1,26 @@
 import pypandoc
-import sys
 
-def md_to_pdf_with_emoji(input_md: str, output_pdf: str):
+
+def convert_md_to_pdf(
+    input_md: str,
+    output_pdf: str,
+    mainfont: str = "TeX Gyre Termes",
+    emoji_font: str = "Noto Color Emoji",
+    margin: str = "1in",
+    pdf_engine: str = "lualatex"
+) -> None:
+
     extra_args = [
-        "--pdf-engine=lualatex",
-        "-V", "mainfont=TeX Gyre Termes",
-        "-V", r"header-includes=\usepackage{fontspec}\usepackage{emoji}\setemojifont{Noto Color Emoji}",
-        "-V", "geometry:margin=1in",
+        f"--pdf-engine={pdf_engine}",
+        "-V", f"mainfont={mainfont}",
+        "-V", r"header-includes=\usepackage{fontspec}\usepackage{emoji}"
+               + rf"\setemojifont{{{emoji_font}}}",
+        "-V", f"geometry:margin={margin}",
     ]
 
-    try:
-        pypandoc.convert_file(
-            source_file=input_md,
-            to='pdf',
-            outputfile=output_pdf,
-            extra_args=extra_args
-        )
-        print(f"Готово: {output_pdf}")
-    except RuntimeError as e:
-        print("Конвертация не удалась:", e, file=sys.stderr)
-
-if __name__ == '__main__':
-    md_to_pdf_with_emoji('input.md', 'output.pdf')
+    pypandoc.convert_file(
+        source_file=input_md,
+        to="pdf",
+        outputfile=output_pdf,
+        extra_args=extra_args
+    )
