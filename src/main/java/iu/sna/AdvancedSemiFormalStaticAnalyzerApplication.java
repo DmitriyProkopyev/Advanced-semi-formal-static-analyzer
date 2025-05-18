@@ -27,6 +27,20 @@ public class AdvancedSemiFormalStaticAnalyzerApplication {
 //    madgeAnalyzer.
     FileGraph f = context.getBean(FileGraph.class);
     f.buildGraph();
+    
+    // Получаем все ребра через getEdges() из базового класса Graph
+    var edges = f.getEdges();
+    for (var edgeInfo : edges) {
+        FileGraph.Edge edge = edgeInfo.edgeData();
+        FileGraph.Vertex from = edgeInfo.source();
+        FileGraph.Vertex to = edgeInfo.destination();
+        
+        System.out.println(
+            from.getFilename() + " -> " + 
+            to.getFilename() + 
+            " (weight: " + edge.getCompoundWeight() + ")"
+        );
+    }
   }
 }
 

@@ -35,7 +35,7 @@ import java.util.stream.Stream;
  */
 @Component
 @Getter
-public class FileGraph {
+public class FileGraph extends Graph<FileGraph.Vertex, FileGraph.Edge> {
   @Value("${project.jsonWithAllFiles}")
   private String JSON_WITH_ALL_FILES_PATH;
 
@@ -68,16 +68,6 @@ public class FileGraph {
   private final Map<Path, String> pathToFilename;
 
   /**
-   * All edges in the graph.
-   */
-  private final ArrayList<Edge> edges;
-
-  /**
-   * All vertices in the graph.
-   */
-  private final ArrayList<Vertex> vertices;
-
-  /**
    * Path to the project root directory.
    */
   private final Path projectRoot;
@@ -101,14 +91,9 @@ public class FileGraph {
       projectRoot = System.getProperty("user.dir");
     }
 
-
     this.projectRoot = Paths.get(projectRoot);
-
-
     this.repository = repository;
     this.pathToFilename = new HashMap<>();
-    this.edges = new ArrayList<>();
-    this.vertices = new ArrayList<>();
   }
 
   /**
@@ -283,17 +268,19 @@ public class FileGraph {
    * Update compound weights for all edges.
    */
   private void updateCompoundPower() {
-    for (Edge edge : edges) {
+    for (Graph.EdgeInfo<Vertex, Edge> edgeInfo : getEdges()) {
       try {
-        double weight = calculateCompoundWeight(edge);
-        edge.setCompoundWeight(edge.getCompoundWeight() + weight);
+        double weight = calculateCompoundWeight(edgeInfo.edgeData());
+        edgeInfo.edgeData().setCompoundWeight(
+                edgeInfo.edgeData().getCompoundWeight() + weight
+        );
       } catch (ArithmeticException e) {
         System.out.println(
                 "ArithmeticException in updateCompoundPower for edge " +
-                        edge.getFrom()
-                                .getFilename() + " -> " + edge.getTo()
-                        .getFilename() + ": " + e.getMessage());
-        edge.setCompoundWeight(0);
+                        edgeInfo.source().getFilename() + " -> " + 
+                        edgeInfo.destination().getFilename() + ": " + e.getMessage()
+        );
+        edgeInfo.edgeData().setCompoundWeight(0);
       }
     }
   }
@@ -382,7 +369,7 @@ public class FileGraph {
     parseFiles();
     parseCommits();
     updateCompoundPower();
-    applyLanguageSpecificAnalisis();
+//    applyLanguageSpecificAnalisis();
 //        removeZeroWeightEdges();
   }
 
@@ -463,15 +450,12 @@ public class FileGraph {
    * Remove edges with zero weight from the graph.
    */
   private void removeZeroWeightEdges() {
-    edges.removeIf(edge -> {
-      if (edge.getCompoundWeight() == 0.0) {
-        edge.getFrom()
-                .getAdjVerticies()
-                .remove(edge.getTo());
-        return true;
-      }
-      return false;
-    });
+    getEdges().stream()
+            .filter(edgeInfo -> edgeInfo.edgeData().getCompoundWeight() == 0.0)
+            .forEach(edgeInfo -> {
+                // Здесь нужно добавить метод в базовый класс Graph для удаления ребра
+                // или реализовать свою логику удаления
+            });
   }
 
   /**
@@ -492,9 +476,8 @@ public class FileGraph {
    * @return Found vertex or null
    */
   public Vertex findVertex(final Path path) {
-    return vertices.stream()
-            .filter(vertex -> vertex.getFilepath()
-                    .equals(path))
+    return getNodes().stream()
+            .filter(vertex -> vertex.getFilepath().equals(path))
             .findFirst()
             .orElse(null);
   }
@@ -507,10 +490,9 @@ public class FileGraph {
    * @return Found edge or null
    */
   public Edge findEdge(Vertex from, Vertex to) {
-    return edges.stream()
-            .filter(edge -> edge.getFrom()
-                    .equals(from) && edge.getTo()
-                    .equals(to))
+    return getOutgoingEdges(from).stream()
+            .filter(edgeInfo -> edgeInfo.destination().equals(to))
+            .map(Graph.EdgeInfo::edgeData)
             .findFirst()
             .orElse(null);
   }
@@ -524,7 +506,7 @@ public class FileGraph {
    */
   private Vertex addVertex(final String fileName, final Path filePath) {
     Vertex newVertex = new Vertex(fileName, filePath);
-    vertices.add(newVertex);
+    super.addNode(newVertex);
     return newVertex;
   }
 
@@ -537,9 +519,7 @@ public class FileGraph {
    */
   private Edge addEdge(final Vertex from, final Vertex to) {
     Edge newEdge = new Edge(from, to);
-    edges.add(newEdge);
-    from.getAdjVerticies()
-            .add(to);
+    super.addEdge(from, to, newEdge);
     return newEdge;
   }
 
@@ -602,6 +582,19 @@ public class FileGraph {
      */
     public int incrementTotalChangedLines(int i) {
       return totalChangedLines += i;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+      Vertex vertex = (Vertex) o;
+      return Objects.equals(filepath, vertex.filepath);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(filepath);
     }
   }
 
@@ -714,6 +707,20 @@ public class FileGraph {
      */
     public int incrementCountCommonChangedLines(int i) {
       return countCommonChangedLines += i;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+      Edge edge = (Edge) o;
+      return Objects.equals(from, edge.from) &&
+              Objects.equals(to, edge.to);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(from, to);
     }
   }
 }
