@@ -20,6 +20,7 @@ src/main/java/iu/sna/PipeLine/api-keys.txt
 *.iws
 *.iml
 *.ipr
+*.log
 
 ### NetBeans ###
 /nbproject/private/

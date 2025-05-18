@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: 'Advanced-semi-formal-static-analyzer'
+  shell:
+    interactive:
+      enabled: false
+logging:
+  level:
+    root: off
