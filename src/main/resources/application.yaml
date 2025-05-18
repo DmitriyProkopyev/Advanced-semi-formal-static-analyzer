@@ -9,5 +9,5 @@ constants:
   LANGUAGE_SPECIFIC_ANALYSIS_COEF: 2
 project:
   pythonVenv: ""
-  jsonWithAllFiles: ""
+  jsonWithAllFiles: "/home/aziz/Projects/Advanced-semi-formal-static-analyzer/java_files.json"
   root: ""
