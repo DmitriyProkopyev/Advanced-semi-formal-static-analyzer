@@ -4,6 +4,9 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+PipelineLLM/
+src/main/java/iu/sna/PipeLine/api-keys.txt
+
 ### STS ###
 .apt_generated
 .classpath
@@ -33,3 +36,5 @@ build/
 .vscode/
 .DS_Store
 .env
+PipelineLLM/src/main/java/org/SNA/api-keys.txt
+.idea/workspace.xml
