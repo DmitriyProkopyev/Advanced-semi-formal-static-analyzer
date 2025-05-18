@@ -5,12 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f2991888-d2c8-4e98-83e9-ab62d3414d31" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/iu/sna/AdvancedSemiFormalStaticAnalyzerApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/iu/sna/AdvancedSemiFormalStaticAnalyzerApplication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/iu/sna/GraphCreator/FileGraph.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/iu/sna/GraphCreator/FileGraph.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/iu/sna/GraphCreator/GraphConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/iu/sna/GraphCreator/GraphConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,7 +45,7 @@
     "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "Spring Boot.AdvancedSemiFormalStaticAnalyzerApplication (1).executor": "Debug",
+    "Spring Boot.AdvancedSemiFormalStaticAnalyzerApplication (1).executor": "Run",
     "Spring Boot.AdvancedSemiFormalStaticAnalyzerApplication.executor": "Run",
     "git-widget-placeholder": "implement__language__specific__analsis",
     "last_opened_file_path": "/home/aziz/Projects/Advanced-semi-formal-static-analyzer",
@@ -107,7 +103,7 @@
       <workItem from="1747488296825" duration="57000" />
       <workItem from="1747488413031" duration="4968000" />
       <workItem from="1747544059584" duration="10076000" />
-      <workItem from="1747557114380" duration="699000" />
+      <workItem from="1747557114380" duration="1706000" />
     </task>
     <servers />
   </component>
@@ -149,7 +145,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/iu/sna/GraphCreator/FileGraph.java</url>
-          <line>393</line>
+          <line>395</line>
           <option name="timeStamp" value="15" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -159,7 +155,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/iu/sna/GraphCreator/GraphConfig.java</url>
-          <line>52</line>
+          <line>53</line>
           <option name="timeStamp" value="18" />
         </line-breakpoint>
         <breakpoint enabled="true" type="java-exception">

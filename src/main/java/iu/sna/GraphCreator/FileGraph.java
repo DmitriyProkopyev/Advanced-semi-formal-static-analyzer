@@ -169,7 +169,7 @@ public class FileGraph {
         // Skip binary or unreadable files
       }
     }
-
+    // scanning for file mentioning
     for (Path filepath1 : filepaths) {
       String file1 = pathToFilename.get(filepath1);
       for (Path filepath2 : filepaths) {
@@ -182,7 +182,7 @@ public class FileGraph {
           String nameWoExtension = getFileNameWithoutExtension(file1);
 
           if (fileContent.contains(nameWoExtension)) {
-            System.out.println(filepath2 + " содержит " + filepath1);
+//            System.out.println(filepath2 + " содержит " + filepath1);
             Vertex from = addVertex(file1, filepath1);
             Vertex to = addVertex(file2, filepath2);
             addEdge(from, to);
@@ -239,6 +239,7 @@ public class FileGraph {
    */
   private void processCommitHistory(List<List<ChangedFile>> commitHistory) {
     commitHistory.forEach(changedFiles -> {
+      // changed files in commit
       List<ChangedFile> changedFileList = new ArrayList<>(changedFiles);
 
       for (int i = 0; i < changedFileList.size(); i++) {
@@ -250,6 +251,7 @@ public class FileGraph {
           ChangedFile file2 = changedFileList.get(j);
           Vertex to = getOrCreateVertex(file2);
 
+          // here we also create edge, if it does not exist
           updateEdgeParameters(from, to);
           updateEdgeParameters(to, from);
         }
@@ -415,7 +417,7 @@ public class FileGraph {
    *
    * @throws IOException
    */
-  public void applyLanguageSpecificAnalisis() throws IOException {
+  private void applyLanguageSpecificAnalisis() throws IOException {
 
     Map<String, List<String>> groupedFiles = parseJson();
     for (String language : groupedFiles.keySet()) {
@@ -451,7 +453,7 @@ public class FileGraph {
           edge = addEdge(from, to);
         }
         // пока добавляем + 1
-        edge.setCompoundWeight(edge.getCompoundWeight() + 1);
+        edge.setCompoundWeight(edge.getCompoundWeight() + 3);
         System.out.println(from.getFilepath() + " -> " + to.getFilepath());
       }
     }

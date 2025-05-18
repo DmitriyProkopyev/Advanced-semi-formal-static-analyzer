@@ -26,8 +26,7 @@ public class AdvancedSemiFormalStaticAnalyzerApplication {
 //    MadgeAnalyzer madgeAnalyzer = context.getBean(MadgeAnalyzer.class);
 //    madgeAnalyzer.
     FileGraph f = context.getBean(FileGraph.class);
-    f.applyLanguageSpecificAnalisis();
-
+    f.buildGraph();
   }
 }
 
