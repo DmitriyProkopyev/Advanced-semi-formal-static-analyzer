@@ -28,7 +28,7 @@ public class Profile {
         // filename = profile name
     }
 
-    public Map<ValidationBlock, Collection<File>> mapOntoValidationBlocks(Collection<FileTechnologyStack> files) {
+    public Map<ValidationBlock, Collection<FileTechnologyStack>> mapOntoValidationBlocks(Collection<FileTechnologyStack> files) {
         // map files (many-to-many) to validation blocks based on their stack
         return null;
     }
