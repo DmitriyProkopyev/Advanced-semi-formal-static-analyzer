@@ -1,0 +1,11 @@
+{
+  "max_clusters": 15,
+  "target_input_to_output_proportion": 1.0,
+  "gemini": {
+    "name": "gemini-2.5-pro-preview-05-06",
+    "max_input_tokens": 1048576,
+    "max_output_tokens": 65536,
+    "daily_requests_per_key": 25,
+    "concurrent_sessions_per_key": 3
+  }
+}
