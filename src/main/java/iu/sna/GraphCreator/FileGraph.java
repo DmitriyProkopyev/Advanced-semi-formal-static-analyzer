@@ -1,6 +1,8 @@
 package iu.sna.GraphCreator;
 
-import iu.sna.GraphCreator.LanguageAnalyzer.LanguageAnalyzerService;
+import com.domain.repository_scanner.FileTechnologyStack;
+import com.infrastructure.Graph;
+import iu.sna.GraphCreator.LanguageAnalyzer.*;
 import lombok.Getter;
 import lombok.Setter;
 import netscape.javascript.JSObject;
@@ -47,22 +49,42 @@ public class FileGraph extends Graph<FileGraph.Vertex, FileGraph.Edge> {
   private final int COMMIT_LIMIT;
   private final double LOCATION_VALUE_COEFFICIENT;
 
-  public FileGraph(Collection<File> files, String configPath, Repository repository) throws IOException {
+private LanguageAnalyzerService languageAnalyzerService;
+  private Collection<FileTechnologyStack> allFiles;
+
+  public FileGraph(
+          Collection<FileTechnologyStack> files, String configPath,
+          Repository repository) throws IOException {
     this.config = new ConfigReader(configPath);
     this.pathToFilename = new HashMap<>();
     this.repository = repository;
 
     // Загружаем конфигурацию
-    this.JSON_WITH_ALL_FILES_PATH = config.getString("project.jsonWithAllFiles");
-    this.LANGUAGE_SPECIFIC_ANALYSIS_CONSTANT = config.getDouble("constants.LANGUAGE_SPECIFIC_ANALYSIS_CONSTANT");
-    this.LANGUAGE_SPECIFIC_ANALYSIS_COEF = config.getDouble("constants.LANGUAGE_SPECIFIC_ANALYSIS_COEF");
-    this.COMMIT_IMPORTANCE_COEFFICIENT = config.getDouble("constants.COMMIT_IMPORTANCE_COEFFICIENT");
+    this.JSON_WITH_ALL_FILES_PATH =
+            config.getString("project.jsonWithAllFiles");
+    this.LANGUAGE_SPECIFIC_ANALYSIS_CONSTANT =
+            config.getDouble("constants.LANGUAGE_SPECIFIC_ANALYSIS_CONSTANT");
+    this.LANGUAGE_SPECIFIC_ANALYSIS_COEF =
+            config.getDouble("constants.LANGUAGE_SPECIFIC_ANALYSIS_COEF");
+    this.COMMIT_IMPORTANCE_COEFFICIENT =
+            config.getDouble("constants.COMMIT_IMPORTANCE_COEFFICIENT");
     this.COMMIT_LIMIT = config.getInt("constants.COMMIT_LIMIT");
-    this.LOCATION_VALUE_COEFFICIENT = config.getDouble("constants.LOCATION_VALUE_COEFFICIENT");
+    this.LOCATION_VALUE_COEFFICIENT =
+            config.getDouble("constants.LOCATION_VALUE_COEFFICIENT");
+
+    this.languageAnalyzerService =
+            new LanguageAnalyzerService(List.of(new PydepsAnalyzer(),
+                    new MadgeAnalyzerJavaScript(),
+                    new MadgeAnalyzerTypeScript(), new JavaParserAnalyzer()
+            ));
+
+    Collection<File> extractedFiles = new ArrayList<>();
+    files.forEach(file -> extractedFiles.add(file.file()));
 
     // Инициализируем граф из переданных файлов
-    initializeGraph(files);
+    initializeGraph(extractedFiles);
   }
+
   /**
    * Parse files recursively using DFS algorithm.
    * Finds all valid files in the project directory.
@@ -82,18 +104,21 @@ public class FileGraph extends Graph<FileGraph.Vertex, FileGraph.Edge> {
 //    }
 //    buildFileRelationships();
 //  }
-
   public void initializeGraph(Collection<File> files) throws IOException {
     for (File file : files) {
       Path path = file.toPath();
       pathToFilename.put(path, file.getName());
       addVertex(file.getName(), path);
     }
+    // смотрим по упоминании имени
     buildFileRelationships();
 
+    // смотрим по упоминании в коммитах
     parseCommits();
 
+    // считаем веса
     updateCompoundPower();
+    // применяем специфический инструмент к группе файлов на одном языке
     applyLanguageSpecificAnalisis();
 
 
@@ -183,7 +208,7 @@ public class FileGraph extends Graph<FileGraph.Vertex, FileGraph.Edge> {
   private void updateEdgeParameters(Vertex from, Vertex to) {
     Edge edge = findEdge(from, to);
     if (edge == null) {
-      return;
+      edge = new Edge(from,to);
     }
     edge.incrementCountCommonCommits();
     edge.incrementCountCommonChangedLines(
@@ -212,15 +237,24 @@ public class FileGraph extends Graph<FileGraph.Vertex, FileGraph.Edge> {
 
       for (int i = 0; i < changedFileList.size(); i++) {
         ChangedFile file1 = changedFileList.get(i);
-        Vertex from = getOrCreateVertex(file1);
+        Vertex from = findVertex(file1.getPath());
+        if (from == null) {
+          continue;
+        }
+
         from.incrementCountCommits();
         from.incrementTotalChangedLines(file1.getChangedLines());
         for (int j = i + 1; j < changedFileList.size(); j++) {
           ChangedFile file2 = changedFileList.get(j);
-          Vertex to = getOrCreateVertex(file2);
+          Vertex to = findVertex(file2.path);
 
-          updateEdgeParameters(from, to);
-          updateEdgeParameters(to, from);
+          // если эти файлы были в инпуте - обновляем
+          if (to != null) {
+            to.incrementCountCommits();
+            to.incrementTotalChangedLines(file2.getChangedLines());
+            updateEdgeParameters(from, to);
+            updateEdgeParameters(to, from);
+          }
         }
       }
     });
@@ -253,16 +287,21 @@ public class FileGraph extends Graph<FileGraph.Vertex, FileGraph.Edge> {
     for (Graph.EdgeInfo<Vertex, Edge> edgeInfo : getEdges()) {
       try {
         double weight = calculateCompoundWeight(edgeInfo.edgeData());
-        edgeInfo.edgeData().setCompoundWeight(
-                edgeInfo.edgeData().getCompoundWeight() + weight
-        );
+        edgeInfo.edgeData()
+                .setCompoundWeight(
+                        edgeInfo.edgeData()
+                                .getCompoundWeight() + weight
+                );
       } catch (ArithmeticException e) {
         System.out.println(
                 "ArithmeticException in updateCompoundPower for edge " +
-                        edgeInfo.source().getFilename() + " -> " + 
-                        edgeInfo.destination().getFilename() + ": " + e.getMessage()
+                        edgeInfo.source()
+                                .getFilename() + " -> " +
+                        edgeInfo.destination()
+                                .getFilename() + ": " + e.getMessage()
         );
-        edgeInfo.edgeData().setCompoundWeight(0);
+        edgeInfo.edgeData()
+                .setCompoundWeight(0);
       }
     }
   }
@@ -347,38 +386,50 @@ public class FileGraph extends Graph<FileGraph.Vertex, FileGraph.Edge> {
    *
    * @throws IOException if file or commit operations fail
    */
-  public void buildGraph() throws IOException {
-    parseFiles();
-    parseCommits();
-    updateCompoundPower();
-    applyLanguageSpecificAnalisis();
-//        removeZeroWeightEdges();
-  }
+//  public void buildGraph() throws IOException {
+//    parseFiles();
+//    parseCommits();
+//    updateCompoundPower();
+//    applyLanguageSpecificAnalisis();
+////        removeZeroWeightEdges();
+//  }
 
 
   /**
    * @return map of language:filepaths
    * @throws IOException
    */
-  Map<String, List<String>> parseJson() throws IOException {
-    Map<String, List<String>> res = new HashMap<>();
-    String content =
-            new String(Files.readAllBytes(Paths.get(JSON_WITH_ALL_FILES_PATH)));
-    JSONObject jsonObject = new JSONObject(content);
-    for (String filepath : jsonObject.keySet()) {
-      JSONObject fileInfo = jsonObject.getJSONObject(filepath);
-      String language = fileInfo.getString("language");
-      // did not see the language yet
-      if (!res.containsKey(language)) {
-        res.put(language.toLowerCase(), new ArrayList<>());
-      }
-      res.get(language)
-              .add(filepath);
+//  Map<String, List<String>> parseJson() throws IOException {
+//    Map<String, List<String>> res = new HashMap<>();
+//    String content =
+//            new String(Files.readAllBytes(Paths.get(JSON_WITH_ALL_FILES_PATH)));
+//    JSONObject jsonObject = new JSONObject(content);
+//    for (String filepath : jsonObject.keySet()) {
+//      JSONObject fileInfo = jsonObject.getJSONObject(filepath);
+//      String language = fileInfo.getString("language");
+//      // did not see the language yet
+//      if (!res.containsKey(language)) {
+//        res.put(language.toLowerCase(), new ArrayList<>());
+//      }
+//      res.get(language)
+//              .add(filepath);
+//    }
+//    return res;
+//  }
+
+private Map<String, List<String>> groupFilesByLanguage() {
+    Map<String, List<String>> groupedFiles = new HashMap<>();
+    
+    for (FileTechnologyStack fileStack : allFiles) {
+        String language = fileStack.language().toLowerCase();
+        File file = fileStack.file();
+        
+        groupedFiles.computeIfAbsent(language, k -> new ArrayList<>())
+                   .add(file.getAbsolutePath());
     }
-    return res;
-  }
-
-
+    
+    return groupedFiles;
+}
   /**
    * Supported languages:
    * - python
@@ -388,7 +439,7 @@ public class FileGraph extends Graph<FileGraph.Vertex, FileGraph.Edge> {
    */
   private void applyLanguageSpecificAnalisis() throws IOException {
 
-    Map<String, List<String>> groupedFiles = parseJson();
+    Map<String, List<String>> groupedFiles = groupFilesByLanguage();
     for (String language : groupedFiles.keySet()) {
       List<String> filenames = groupedFiles.get(language);
 
@@ -422,8 +473,9 @@ public class FileGraph extends Graph<FileGraph.Vertex, FileGraph.Edge> {
           edge = addEdge(from, to);
         }
         // пока *2 + 3
-        edge.setCompoundWeight(edge.getCompoundWeight() * LANGUAGE_SPECIFIC_ANALYSIS_COEF + 
-                              LANGUAGE_SPECIFIC_ANALYSIS_CONSTANT);
+        edge.setCompoundWeight(
+                edge.getCompoundWeight() * LANGUAGE_SPECIFIC_ANALYSIS_COEF +
+                        LANGUAGE_SPECIFIC_ANALYSIS_CONSTANT);
         System.out.println(from.getFilepath() + " -> " + to.getFilepath());
       }
     }
@@ -432,15 +484,6 @@ public class FileGraph extends Graph<FileGraph.Vertex, FileGraph.Edge> {
   /**
    * Remove edges with zero weight from the graph.
    */
-  private void removeZeroWeightEdges() {
-    getEdges().stream()
-            .filter(edgeInfo -> edgeInfo.edgeData().getCompoundWeight() == 0.0)
-            .forEach(edgeInfo -> {
-                // Здесь нужно добавить метод в базовый класс Graph для удаления ребра
-                // или реализовать свою логику удаления
-            });
-  }
-
   /**
    * Get commit history from repository.
    *
@@ -459,7 +502,8 @@ public class FileGraph extends Graph<FileGraph.Vertex, FileGraph.Edge> {
    */
   public Vertex findVertex(final Path path) {
     return getNodes().stream()
-            .filter(vertex -> vertex.getFilepath().equals(path))
+            .filter(vertex -> vertex.getFilepath()
+                    .equals(path))
             .findFirst()
             .orElse(null);
   }
@@ -473,7 +517,8 @@ public class FileGraph extends Graph<FileGraph.Vertex, FileGraph.Edge> {
    */
   public Edge findEdge(Vertex from, Vertex to) {
     return getOutgoingEdges(from).stream()
-            .filter(edgeInfo -> edgeInfo.destination().equals(to))
+            .filter(edgeInfo -> edgeInfo.destination()
+                    .equals(to))
             .map(Graph.EdgeInfo::edgeData)
             .findFirst()
             .orElse(null);

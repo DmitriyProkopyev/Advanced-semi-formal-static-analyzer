@@ -78,6 +78,9 @@ public final class GitCommitParser {
   public List<ChangedFile> getChangedLinesInCommit(final ObjectId commitId) {
     try (RevWalk revWalk = new RevWalk(this.repository)) {
       RevCommit commit = revWalk.parseCommit(commitId);
+      if (commit == null) {
+        throw new IllegalArgumentException("Invalid commit ID: " + commitId);
+      }
       RevCommit parentCommit = commit.getParentCount() > 0
               ? revWalk.parseCommit(commit.getParent(0)
               .getId())

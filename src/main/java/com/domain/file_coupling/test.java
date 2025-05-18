@@ -5,6 +5,6 @@ import java.util.Collection;
 
 public class test {
   public static void main(String[] st) {
-    DependencyGraph g = new DependencyGraph((Collection<File>) new File("asd"));
+//    DependencyGraph g = new DependencyGraph((Collection<File>) new File("asd"));
   }
 }
