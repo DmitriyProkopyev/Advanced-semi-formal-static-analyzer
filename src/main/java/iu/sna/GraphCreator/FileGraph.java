@@ -3,7 +3,9 @@ package iu.sna.GraphCreator;
 import iu.sna.GraphCreator.LanguageAnalyzer.LanguageAnalyzerService;
 import lombok.Getter;
 import lombok.Setter;
+import netscape.javascript.JSObject;
 import org.eclipse.jgit.lib.Repository;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -34,6 +36,9 @@ import java.util.stream.Stream;
 @Component
 @Getter
 public class FileGraph {
+  @Value("${project.jsonWithAllFiles}")
+  private String JSON_WITH_ALL_FILES_PATH;
+
   /**
    * Coefficient for commit importance in weight calculations.
    * Loaded from application.yaml.
@@ -95,7 +100,11 @@ public class FileGraph {
     if (projectRoot == null || projectRoot.isEmpty()) {
       projectRoot = System.getProperty("user.dir");
     }
+
+
     this.projectRoot = Paths.get(projectRoot);
+
+
     this.repository = repository;
     this.pathToFilename = new HashMap<>();
     this.edges = new ArrayList<>();
@@ -376,60 +385,76 @@ public class FileGraph {
   }
 
 
+  /**
+   * @return map of language:filepaths
+   * @throws IOException
+   */
+  Map<String, List<String>> parseJson() throws IOException {
+    Map<String, List<String>> res = new HashMap<>();
+    String content =
+            new String(Files.readAllBytes(Paths.get(JSON_WITH_ALL_FILES_PATH)));
+    JSONObject jsonObject = new JSONObject(content);
+    for (String filepath : jsonObject.keySet()) {
+      JSONObject fileInfo = jsonObject.getJSONObject(filepath);
+      String language = fileInfo.getString("language");
+      // did not see the language yet
+      if (!res.containsKey(language)) {
+        res.put(language, new ArrayList<>());
+      }
+      res.get(language)
+              .add(filepath);
+    }
+    return res;
+  }
 
-  // TODO: в будущем фориков по всем языка пройтись + нужно распарсить json
-//  файл как -то и сгруппировать...
 
   /**
    * Supported languages:
    * - python
    * -typescript/javascript
+   *
    * @throws IOException
    */
   public void applyLanguageSpecificAnalisis() throws IOException {
 
-    String absolutePathsString =
-            "/home/aziz/Projects/rars-reborn/app/src/main/java/rars/api/TellBackend.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/api/TellFrontend.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/assembler/Assembler.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/assembler/Preprocessor.java /home/aziz/aziz/Projects/rars-reborn/app/src/main/java/rars/assembler/Tokenizer.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/assembler/Token.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/assembler/TokenType.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/Globals.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/javafx/FrontendApi.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/javafx/InstructionData.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/javafx/MainInterface.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/javafx/RegisterData.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/Launch.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/Logger.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/BasicInstruction.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/devices/Memory.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/Instruction.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/instructions/ADDI.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/instructions/ADD.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/instructions/ANDI.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/instructions/AND.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/instructions/BEQ.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/instructions/BGE.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/instructions/BGT.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/instructions/BLE.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/instructions/BLT.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/instructions/BNE.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/instructions/ECALL.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/instructions/JAL.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/instructions/J.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/instructions/LB.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/instructions/LI.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/instructions/MV.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/instructions/NOT.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/instructions/ORI.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/instructions/OR.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/instructions/SB.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/instructions/XORI.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/instructions/XOR.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/instructionSets/BranchInstructions.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/instructionSets/InstructionInitialSet.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/InstructionTable.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/PseudoInstruction.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/registerFiles/Integer32bitRegs.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/Register.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/registers/GeneralReg.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/registers/PC.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/registers/ZeroReg.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/RegisterTable.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/SysCall.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/syscalls/ReadIntSys.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/syscalls/WriteIntSys.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/SyscallTable.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/riscv/sysCallTables/InitialSysCalls.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/simulator/ImOperand.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/simulator/LabelOperand.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/simulator/Operand.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/simulator/ProgramStatement.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/simulator/RegOperand.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/simulator/RiscvProgram.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/simulator/Simulator.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/simulator/SimulatorThread.java /home/aziz/Projects/rars-reborn/app/src/main/java/rars/simulator/SourceLine.java /home/aziz/Projects/rars-reborn/app/src/test/java/rars/assembler/TokenizerTest.java /home/aziz/Projects/rars-reborn/app/src/test/java/rars/riscv/instructions/ADDITest.java /home/aziz/Projects/rars-reborn/app/src/test/java/rars/riscv/instructions/ADDTest.java /home/aziz/Projects/rars-reborn/app/src/test/java/rars/riscv/instructions/ANDITest.java /home/aziz/Projects/rars-reborn/app/src/test/java/rars/riscv/instructions/ANDTest.java /home/aziz/Projects/rars-reborn/app/src/test/java/rars/riscv/instructions/NOTTest.java /home/aziz/Projects/rars-reborn/app/src/test/java/rars/riscv/instructions/ORITest.java /home/aziz/Projects/rars-reborn/app/src/test/java/rars/riscv/instructions/ORTest.java /home/aziz/Projects/rars-reborn/app/src/test/java/rars/riscv/instructions/XORITest.java /home/aziz/Projects/rars-reborn/app/src/test/java/rars/riscv/instructions/XORTest.java";
+    Map<String, List<String>> groupedFiles = parseJson();
+    for (String language : groupedFiles.keySet()) {
+      List<String> filenames = groupedFiles.get(language);
 
-    // Разделяем строку на отдельные пути, используя пробел в качестве разделителя
-    String[] pathsArray = absolutePathsString.split(" ");
+      List<Map.Entry<Path, Path>> toolOutput =
+              languageAnalyzerService.AnalyzeDependencies(
+                      language,
+                      filenames
+              );
+      for (Map.Entry<Path, Path> entry : toolOutput) {
+        Path pFrom = entry.getKey();
+        Path pTo = entry.getValue();
+        Vertex from = findVertex(pFrom);
+        Vertex to = findVertex(pTo);
+        Edge edge = findEdge(from, to);
+        if (from == null) {
+          from = addVertex(
+                  pFrom.getFileName()
+                          .toString(), pFrom
+          );
+        }
 
-    // Преобразуем массив строк в List<String>
-    List<String> absolutePathsList = Arrays.asList(pathsArray);
-    List<Map.Entry<Path, Path>> toolOutput =
-            languageAnalyzerService.AnalyzeDependencies(
-                    "java",
-                   absolutePathsList
-            );
-    for (Map.Entry<Path, Path> entry : toolOutput) {
-      Path pFrom = entry.getKey();
-      Path pTo = entry.getValue();
-      Vertex from = findVertex(pFrom);
-      Vertex to = findVertex(pTo);
-      Edge edge = findEdge(from, to);
-      if (from == null) {
-        from= addVertex(
-                pFrom.getFileName()
-                        .toString(), pFrom
-        );
+
+        if (to == null) {
+          to = addVertex(
+                  pTo.getFileName()
+                          .toString(), pTo
+          );
+
+        }
+        if (edge == null) {
+          edge = addEdge(from, to);
+        }
+        // пока добавляем + 1
+        edge.setCompoundWeight(edge.getCompoundWeight() + 1);
+        System.out.println(from.getFilepath() + " -> " + to.getFilepath());
       }
-
-
-      if (to == null) {
-        to = addVertex(
-                pTo.getFileName()
-                        .toString(), pTo
-        );
-
-      }
-      if (edge == null) {
-        edge = addEdge(from, to);
-      }
-      // пока добавляем + 1
-      edge.setCompoundWeight(edge.getCompoundWeight() + 1);
-      System.out.println(from.getFilepath() + " -> " + to.getFilepath());
     }
-
   }
 
   /**

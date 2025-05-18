@@ -6,5 +6,5 @@ constants:
   commit_importance_coefficient: 1
 project:
   pythonVenv: "/home/aziz/python_env/myvenv"
-
-  root: ""
+  jsonWithAllFiles : "/home/aziz/Projects/Advanced-semi-formal-static-analyzer/java_files.json"
+  root: "/home/aziz/Projects/Advanced-semi-formal-static-analyzer"
