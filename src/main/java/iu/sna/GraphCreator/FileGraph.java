@@ -369,7 +369,7 @@ public class FileGraph extends Graph<FileGraph.Vertex, FileGraph.Edge> {
     parseFiles();
     parseCommits();
     updateCompoundPower();
-//    applyLanguageSpecificAnalisis();
+    applyLanguageSpecificAnalisis();
 //        removeZeroWeightEdges();
   }
 
