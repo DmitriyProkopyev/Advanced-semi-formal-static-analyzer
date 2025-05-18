@@ -4,7 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f2991888-d2c8-4e98-83e9-ab62d3414d31" name="Changes" comment="" />
+    <list default="true" id="f2991888-d2c8-4e98-83e9-ab62d3414d31" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pydeps.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/iu/sna/AdvancedSemiFormalStaticAnalyzerApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/iu/sna/AdvancedSemiFormalStaticAnalyzerApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/iu/sna/GraphCreator/FileGraph.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/iu/sna/GraphCreator/FileGraph.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/t.txt" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -99,7 +106,7 @@
       <workItem from="1747488206458" duration="80000" />
       <workItem from="1747488296825" duration="57000" />
       <workItem from="1747488413031" duration="4968000" />
-      <workItem from="1747544059584" duration="2618000" />
+      <workItem from="1747544059584" duration="7321000" />
     </task>
     <servers />
   </component>
@@ -121,7 +128,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/iu/sna/AdvancedSemiFormalStaticAnalyzerApplication.java</url>
-          <line>26</line>
+          <line>28</line>
           <option name="timeStamp" value="6" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -131,9 +138,23 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/iu/sna/GraphCreator/FileGraph.java</url>
-          <line>397</line>
-          <option name="timeStamp" value="9" />
+          <line>424</line>
+          <option name="timeStamp" value="10" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/iu/sna/AdvancedSemiFormalStaticAnalyzerApplication.java</url>
+          <line>31</line>
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/iu/sna/GraphCreator/LanguageAnalyzer/JavaParserAnalyzer.java</url>
+          <line>27</line>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.nio.file.NoSuchFileException" package="java.nio.file" />
+          <option name="timeStamp" value="12" />
+        </breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
