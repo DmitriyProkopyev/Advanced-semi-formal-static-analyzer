@@ -4,7 +4,8 @@ spring:
 constants:
   location_value_coefficient: 1
   commit_importance_coefficient: 1
+  commit_limit: 10
 project:
-  pythonVenv: "/home/aziz/python_env/myvenv"
-  jsonWithAllFiles : "/home/aziz/Projects/Advanced-semi-formal-static-analyzer/java_files.json"
-  root: "/home/aziz/Projects/Advanced-semi-formal-static-analyzer"
+  pythonVenv: ""
+  jsonWithAllFiles : ""
+  root: ""
