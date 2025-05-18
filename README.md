@@ -8,20 +8,21 @@ To setup and test SAT firstly install deps (needs `sudo` rights)
 sudo apt install gradle python # If not installed
 cd sat-analyzer
 mvn install clean
+```
 
+### SpotBugs installation
+```bash
 # Also install SpotBugs AND build
 cd src/main && mkdir resources
 cd resources
 curl -O -L "https://github.com/spotbugs/spotbugs/releases/download/4.9.3/spotbugs-4.9.3.tgz"
-tar -xf spotbugs-*.tgz && mv spotbugs-* spotbugs
+tar -xf spotbugs-*.tgz
+mv spotbugs-* spotbugs
 rm spotbugs-*.tgz
-cd spotbugs && gradleDependencies installation for SAT
-# Allow access globally 
+cd spotbugs && gradle # Dependencies installation for SAT
+# Allow access globally
 sudo ln -s $(pwd)/bin/spotbugs /usr/bin/spotbugs
 ```
-
-### SpotBugs installation
-
 
 ### Semgrep installation
 If you use Linux:

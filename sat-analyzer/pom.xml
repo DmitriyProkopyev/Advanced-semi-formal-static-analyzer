@@ -21,7 +21,7 @@
             <type>jar</type>
         </dependency>
         
-        <dependency>s
+        <dependency>
             <groupId>net.sf.saxon</groupId>
             <artifactId>Saxon-HE</artifactId>
             <version>12.5</version>

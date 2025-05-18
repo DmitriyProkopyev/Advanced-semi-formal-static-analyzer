@@ -44,7 +44,7 @@ public class CodeAnalyzer {
         
         return report;
     }
-    
+
     public static void main(String[] args) {
         if (args.length == 0) {
             System.out.println("Please, specify project path. Usage: java CodeAnalyzer <project-path>");
