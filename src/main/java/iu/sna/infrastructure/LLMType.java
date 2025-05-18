@@ -2,8 +2,6 @@ package iu.sna.infrastructure;
 
 import iu.sna.application.Config;
 
-import java.util.stream.Stream;
-
 public enum LLMType {
     gemini(Config.gemini.getString("name"),
             Config.gemini.getInt("max_input_tokens"),
@@ -27,12 +25,5 @@ public enum LLMType {
         this.maxOutputTokens = maxOutputTokens;
         this.dailyRequestsPerKey = dailyRequestsPerKey;
         this.concurrentSessionsPerKey = concurrentSessionsPerKey;
-    }
-
-    public static LLMType getLLMType(String name) {
-        return Stream.of(values())
-                .filter(value -> value.name().equals(name))
-                .findFirst()
-                .orElse(null);
     }
 }
