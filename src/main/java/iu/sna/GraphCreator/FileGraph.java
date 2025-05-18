@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,81 +34,69 @@ import java.util.stream.Stream;
  * @author Your Name
  * @version 1.0
  */
-@Component
 @Getter
 public class FileGraph extends Graph<FileGraph.Vertex, FileGraph.Edge> {
-  @Value("${project.jsonWithAllFiles}")
-  private String JSON_WITH_ALL_FILES_PATH;
-
-  @Value("${constants.LANGUAGE_SPECIFIC_ANALYSIS_CONSTANT:3}")
-  private double LANGUAGE_SPECIFIC_ANALYSIS_CONSTANT;
-
-  @Value("${constants.LANGUAGE_SPECIFIC_ANALYSIS_COEF:1}")
-  private double LANGUAGE_SPECIFIC_ANALYSIS_COEF;
-
-  @Value("${constants.COMMIT_IMPORTANCE_COEFFICIENT:1}")
-  private double COMMIT_IMPORTANCE_COEFFICIENT;
-
-  @Value("${constants.COMMIT_LIMIT:10}")
-  private int COMMIT_LIMIT;
-
-  @Value("${constants.LOCATION_VALUE_COEFFICIENT:1}")
-  private double LOCATION_VALUE_COEFFICIENT;
-
-  @Autowired
-  LanguageAnalyzerService languageAnalyzerService;
-  /**
-   * Maps file paths to their filenames.
-   */
   private final Map<Path, String> pathToFilename;
-
-  /**
-   * Path to the project root directory.
-   */
-  private final Path projectRoot;
-
-  /**
-   * Git repository instance for commit analysis.
-   */
+  private final ConfigReader config;
   private final Repository repository;
+  // Конфигурационные параметры
+  private final String JSON_WITH_ALL_FILES_PATH;
+  private final double LANGUAGE_SPECIFIC_ANALYSIS_CONSTANT;
+  private final double LANGUAGE_SPECIFIC_ANALYSIS_COEF;
+  private final double COMMIT_IMPORTANCE_COEFFICIENT;
+  private final int COMMIT_LIMIT;
+  private final double LOCATION_VALUE_COEFFICIENT;
 
-  /**
-   * Initialize graph objects.
-   *
-   * @param projectRoot String absolute path to the root
-   * @param repository  Git repository instance
-   */
-  @Autowired
-  public FileGraph(
-          @Value("${project.root:${user.dir}}") String projectRoot,
-          Repository repository) {
-    if (projectRoot == null || projectRoot.isEmpty()) {
-      projectRoot = System.getProperty("user.dir");
-    }
-
-    this.projectRoot = Paths.get(projectRoot);
-    this.repository = repository;
+  public FileGraph(Collection<File> files, String configPath, Repository repository) throws IOException {
+    this.config = new ConfigReader(configPath);
     this.pathToFilename = new HashMap<>();
-  }
+    this.repository = repository;
 
+    // Загружаем конфигурацию
+    this.JSON_WITH_ALL_FILES_PATH = config.getString("project.jsonWithAllFiles");
+    this.LANGUAGE_SPECIFIC_ANALYSIS_CONSTANT = config.getDouble("constants.LANGUAGE_SPECIFIC_ANALYSIS_CONSTANT");
+    this.LANGUAGE_SPECIFIC_ANALYSIS_COEF = config.getDouble("constants.LANGUAGE_SPECIFIC_ANALYSIS_COEF");
+    this.COMMIT_IMPORTANCE_COEFFICIENT = config.getDouble("constants.COMMIT_IMPORTANCE_COEFFICIENT");
+    this.COMMIT_LIMIT = config.getInt("constants.COMMIT_LIMIT");
+    this.LOCATION_VALUE_COEFFICIENT = config.getDouble("constants.LOCATION_VALUE_COEFFICIENT");
+
+    // Инициализируем граф из переданных файлов
+    initializeGraph(files);
+  }
   /**
    * Parse files recursively using DFS algorithm.
    * Finds all valid files in the project directory.
    *
    * @throws IOException if file operations fail
    */
-  public void parseFiles() throws IOException {
-    try (Stream<Path> walk = Files.walk(projectRoot)) {
-      pathToFilename.putAll(walk
-              .filter(this::isValidFile)
-              .collect(Collectors.toMap(
-                      path -> path,
-                      path -> path.getFileName()
-                              .toString(),
-                      (oldPath, newPath) -> newPath
-              )));
+//  public void parseFiles() throws IOException {
+//    try (Stream<Path> walk = Files.walk(projectRoot)) {
+//      pathToFilename.putAll(walk
+//              .filter(this::isValidFile)
+//              .collect(Collectors.toMap(
+//                      path -> path,
+//                      path -> path.getFileName()
+//                              .toString(),
+//                      (oldPath, newPath) -> newPath
+//              )));
+//    }
+//    buildFileRelationships();
+//  }
+
+  public void initializeGraph(Collection<File> files) throws IOException {
+    for (File file : files) {
+      Path path = file.toPath();
+      pathToFilename.put(path, file.getName());
+      addVertex(file.getName(), path);
     }
     buildFileRelationships();
+
+    parseCommits();
+
+    updateCompoundPower();
+    applyLanguageSpecificAnalisis();
+
+
   }
 
   /**
@@ -194,7 +183,7 @@ public class FileGraph extends Graph<FileGraph.Vertex, FileGraph.Edge> {
   private void updateEdgeParameters(Vertex from, Vertex to) {
     Edge edge = findEdge(from, to);
     if (edge == null) {
-      edge = addEdge(from, to);
+      return;
     }
     edge.incrementCountCommonCommits();
     edge.incrementCountCommonChangedLines(
@@ -207,7 +196,7 @@ public class FileGraph extends Graph<FileGraph.Vertex, FileGraph.Edge> {
    * @throws IOException if commit operations fail
    */
   public void parseCommits() throws IOException {
-    List<List<ChangedFile>> commitHistory = getCommitHistory(repository);
+    List<List<ChangedFile>> commitHistory = getCommitHistory();
     processCommitHistory(commitHistory);
   }
 
@@ -230,7 +219,6 @@ public class FileGraph extends Graph<FileGraph.Vertex, FileGraph.Edge> {
           ChangedFile file2 = changedFileList.get(j);
           Vertex to = getOrCreateVertex(file2);
 
-          // here we also create edge, if it does not exist
           updateEdgeParameters(from, to);
           updateEdgeParameters(to, from);
         }
@@ -456,10 +444,9 @@ public class FileGraph extends Graph<FileGraph.Vertex, FileGraph.Edge> {
   /**
    * Get commit history from repository.
    *
-   * @param repository Git repository
    * @return List of commits with changed files
    */
-  private List<List<ChangedFile>> getCommitHistory(Repository repository) {
+  private List<List<ChangedFile>> getCommitHistory() {
     GitCommitParser parser = new GitCommitParser(repository);
     return new ArrayList<>(parser.getChangeFilesInFirstNcommits(COMMIT_LIMIT));
   }
