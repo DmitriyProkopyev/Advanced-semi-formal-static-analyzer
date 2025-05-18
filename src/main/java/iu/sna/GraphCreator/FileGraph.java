@@ -39,26 +39,20 @@ public class FileGraph extends Graph<FileGraph.Vertex, FileGraph.Edge> {
   @Value("${project.jsonWithAllFiles}")
   private String JSON_WITH_ALL_FILES_PATH;
 
-  /**
-   * Coefficient for commit importance in weight calculations.
-   * Loaded from application.yaml.
-   */
-  @Value("${constants.commit_importance_coefficient}")
-  private double commitCompoundWeightCoef;
+  @Value("${constants.LANGUAGE_SPECIFIC_ANALYSIS_CONSTANT:3}")
+  private double LANGUAGE_SPECIFIC_ANALYSIS_CONSTANT;
 
-  /**
-   * Maximum number of commits to analyze.
-   * Defaults to 10 if not specified.
-   */
-  @Value("${constants.commit_limit:10}")
-  private int commitLimit;
+  @Value("${constants.LANGUAGE_SPECIFIC_ANALYSIS_COEF:1}")
+  private double LANGUAGE_SPECIFIC_ANALYSIS_COEF;
 
-  /**
-   * Coefficient for location-based calculations.
-   * Loaded from application.yaml.
-   */
-  @Value("${constants.location_value_coefficient}")
-  private double locationValueCoeficient;
+  @Value("${constants.COMMIT_IMPORTANCE_COEFFICIENT:1}")
+  private double COMMIT_IMPORTANCE_COEFFICIENT;
+
+  @Value("${constants.COMMIT_LIMIT:10}")
+  private int COMMIT_LIMIT;
+
+  @Value("${constants.LOCATION_VALUE_COEFFICIENT:1}")
+  private double LOCATION_VALUE_COEFFICIENT;
 
   @Autowired
   LanguageAnalyzerService languageAnalyzerService;
@@ -351,7 +345,7 @@ public class FileGraph extends Graph<FileGraph.Vertex, FileGraph.Edge> {
     }
 
     double result = (((double) commonFileChangesCounter * avgCommonChangedLines)
-            / denominator) * fileLocationCoef * commitCompoundWeightCoef;
+            / denominator) * fileLocationCoef * COMMIT_IMPORTANCE_COEFFICIENT;
 
     if (Double.isNaN(result) || Double.isInfinite(result)) {
       return 0.0;
@@ -440,7 +434,8 @@ public class FileGraph extends Graph<FileGraph.Vertex, FileGraph.Edge> {
           edge = addEdge(from, to);
         }
         // пока *2 + 3
-        edge.setCompoundWeight(edge.getCompoundWeight()*2 + 3);
+        edge.setCompoundWeight(edge.getCompoundWeight() * LANGUAGE_SPECIFIC_ANALYSIS_COEF + 
+                              LANGUAGE_SPECIFIC_ANALYSIS_CONSTANT);
         System.out.println(from.getFilepath() + " -> " + to.getFilepath());
       }
     }
@@ -466,7 +461,7 @@ public class FileGraph extends Graph<FileGraph.Vertex, FileGraph.Edge> {
    */
   private List<List<ChangedFile>> getCommitHistory(Repository repository) {
     GitCommitParser parser = new GitCommitParser(repository);
-    return new ArrayList<>(parser.getChangeFilesInFirstNcommits(commitLimit));
+    return new ArrayList<>(parser.getChangeFilesInFirstNcommits(COMMIT_LIMIT));
   }
 
   /**
@@ -671,7 +666,7 @@ public class FileGraph extends Graph<FileGraph.Vertex, FileGraph.Edge> {
       double depthRatio =
               maxDepth > 0 ? (mean - commonRootDepth) / maxDepth : 0;
 
-      this.FILE_LOCATION_COEF = (1.5 - depthRatio) * locationValueCoeficient;
+      this.FILE_LOCATION_COEF = (1.5 - depthRatio) * LOCATION_VALUE_COEFFICIENT;
     }
 
     /**

@@ -60,6 +60,11 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="iu.sna.GraphCreator.LanguageAnalyzer" />
+    </key>
+  </component>
   <component name="RunManager" selected="Spring Boot.AdvancedSemiFormalStaticAnalyzerApplication (1)">
     <configuration name="AdvancedSemiFormalStaticAnalyzerApplication (1)" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
       <module name="sna" />
@@ -103,7 +108,7 @@
       <workItem from="1747488413031" duration="4968000" />
       <workItem from="1747544059584" duration="10076000" />
       <workItem from="1747557114380" duration="1706000" />
-      <workItem from="1747574678088" duration="332000" />
+      <workItem from="1747574678088" duration="949000" />
     </task>
     <servers />
   </component>

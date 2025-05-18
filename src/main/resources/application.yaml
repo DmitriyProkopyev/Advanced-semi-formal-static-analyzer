@@ -2,10 +2,12 @@ spring:
   application:
     name: 'Advanced-semi-formal-static-analyzer'
 constants:
-  location_value_coefficient: 1
-  commit_importance_coefficient: 1
-  commit_limit: 10
+  LOCATION_VALUE_COEFFICIENT: 1
+  COMMIT_IMPORTANCE_COEFFICIENT: 1
+  COMMIT_LIMIT: 10
+  LANGUAGE_SPECIFIC_ANALYSIS_CONSTANT: 3
+  LANGUAGE_SPECIFIC_ANALYSIS_COEF: 2
 project:
   pythonVenv: ""
-  jsonWithAllFiles : ""
+  jsonWithAllFiles: ""
   root: ""
