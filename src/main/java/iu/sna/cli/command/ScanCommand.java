@@ -1,17 +1,20 @@
 package iu.sna.cli.command;
 
+import iu.sna.cli.config.CommandUtils;
 import iu.sna.cli.validator.Validator;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.shell.command.annotation.Command;
 import org.springframework.shell.command.annotation.Option;
+import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Objects;
 
 @Command(
         command = "scan",
         description = "Apply a git-warden profile setup to scan a specific git-repository and generate the compliance report"
 )
-@Configuration
+@Component
 public class ScanCommand {
 
     @Command
@@ -22,6 +25,11 @@ public class ScanCommand {
                     description = "The directory of the local git repository being analyzed",
                     required = true
             ) Path repository,
+            @Option(
+                    longNames = "directories",
+                    shortNames = 'd',
+                    description = "The filtered directories inside the repository being analyzed"
+            ) Path[] directories,
             @Option(
                     longNames = "profile",
                     shortNames = 'p',
@@ -34,7 +42,7 @@ public class ScanCommand {
                     description = "Name and location for the generated compliance report",
                     required = true
             ) Path output
-    ) {
+    ) throws IOException {
         Validator.getInstance()
                 .pathExists(repository)
                 .pathExists(output)
@@ -43,6 +51,15 @@ public class ScanCommand {
                 .isFile(output)
                 .validate();
 
-        return repository + "\n" + profile + "\n" + output;
+        return String.join("\n", Objects.requireNonNull(
+                CommandUtils.createApplicationFacade(
+                                CommandUtils.getSetupType(),
+                                CommandUtils.getApiKeys()
+                        ).scan(
+                                profile,
+                                CommandUtils.createDirectoryTree(repository, directories),
+                                output.toFile()
+                        ).collectList()
+                        .block()));
     }
 }

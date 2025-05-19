@@ -21,6 +21,10 @@ public final class Validator {
     }
 
     public Validator notEqualPaths(Path path, Path[] paths) {
+        if (paths == null) {
+            return instance;
+        }
+
         for (Path path2 : paths) {
             if (!Objects.equals(path, path2) || path == null) {
                 continue;
@@ -53,6 +57,10 @@ public final class Validator {
     }
 
     public Validator pathExists(Path[] paths) {
+        if (paths == null) {
+            return instance;
+        }
+
         for (Path path : paths) {
             pathExists(path);
         }
@@ -95,6 +103,10 @@ public final class Validator {
     }
 
     public Validator isValidFileType(Path[] paths) {
+        if (paths == null) {
+            return instance;
+        }
+
         for (Path path : paths) {
             if (path == null) {
                 continue;

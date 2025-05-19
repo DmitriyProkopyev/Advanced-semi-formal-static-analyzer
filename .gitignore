@@ -4,6 +4,10 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+.DS_Store
+*.log
+src/main/resources/setup
+
 ### STS ###
 .apt_generated
 .classpath
@@ -31,5 +35,3 @@ build/
 
 ### VS Code ###
 .vscode/
-.DS_Store
-*.log

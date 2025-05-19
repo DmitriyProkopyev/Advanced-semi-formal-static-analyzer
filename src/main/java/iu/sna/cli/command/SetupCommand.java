@@ -1,19 +1,20 @@
 package iu.sna.cli.command;
 
+import iu.sna.cli.config.CommandUtils;
 import iu.sna.cli.config.SetupType;
 import iu.sna.cli.validator.Validator;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.shell.command.annotation.Command;
 import org.springframework.shell.command.annotation.Option;
+import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Arrays;
 
 @Command(
         command = "setup",
         description = "Install and setup the tool, required to operate properly"
 )
-@Configuration
+@Component
 public class SetupCommand {
 
     @Command
@@ -34,13 +35,15 @@ public class SetupCommand {
                     shortNames = 'f',
                     description = "Path to a file containing an LLM provider API key on its every line"
             ) Path fileKeys
-    ) {
+    ) throws IOException {
         Validator.getInstance()
                 .pathExists(fileKeys)
                 .isFile(fileKeys)
                 .eitherParamOrFileApiKeys(keys, fileKeys)
                 .validate();
 
-        return type.name() + "\n" + Arrays.toString(keys) + "\n" + fileKeys;
+        CommandUtils.setSetupType(type);
+        CommandUtils.setApiKeys(keys, fileKeys);
+        return "Setup completed successfully for " + type.name();
     }
 }
