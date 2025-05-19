@@ -50,7 +50,7 @@ public class StackAnalyzer {
     public List<FileTechnologyStack> analyzeProjectFiles(String projectPath) {
         ScanCodeAnalyzer sca = new ScanCodeAnalyzer();
         List<FileTechnologyStack> stacks = sca.analyzeFiles(new File(projectPath));
-        ScanCodeAnalyzer.print_pisun(stacks);
+        // ScanCodeAnalyzer.printAll(stacks);
         return stacks;
     }
 }

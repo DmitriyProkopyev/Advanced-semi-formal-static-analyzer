@@ -1,7 +1,7 @@
-// package iu.sna.cli.validator;
+package iu.sna.cli.validator;
 
-// import lombok.experimental.StandardException;
+import lombok.experimental.StandardException;
 
-// @StandardException
-// public class ValidationException extends RuntimeException {
-// }
+@StandardException
+public class ValidationException extends RuntimeException {
+}

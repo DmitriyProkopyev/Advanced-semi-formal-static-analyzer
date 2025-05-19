@@ -181,9 +181,7 @@ public class ScanCodeAnalyzer extends BasicAnalyzer implements IAnalyzer {
                     String fileName = new File(path).getName().toLowerCase();
                     int dot = fileName.lastIndexOf('.');
                     String ext = (dot != -1) ? fileName.substring(dot) : "";
-                    System.out.println("splitted file: " + path + " to " + fileName + " and " + ext);
                     language = EXT_TO_LANG.getOrDefault(ext, null);
-                    System.out.println(EXT_TO_LANG);
                 }
                 // Package technologies
                 Set<String> technologies = new HashSet<>(fileToTechnologies.getOrDefault(path, new HashSet<>()));
