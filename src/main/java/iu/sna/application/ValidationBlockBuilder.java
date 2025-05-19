@@ -33,7 +33,7 @@ public class ValidationBlockBuilder {
 
     String systemPrompt = "You are the expert in analyzing projects for standards and best practices violation";
     String userPrompt = """
-                            
+                            Standards are any framework, instrument, library, etc.
                             
                             You are given with the following Map1 : language -> List of standards
                             
@@ -60,7 +60,7 @@ public class ValidationBlockBuilder {
                               }
                             ...
                             ]
-                            and include only json file (with brackets [])
+                            and include only json TEXT (with brackets [])
                         """.formatted(languages,technologies);
     String response = this.llm.nextModel()
             .chat(ChatRequest.builder()
@@ -97,7 +97,7 @@ public class ValidationBlockBuilder {
             name,
             langs,
             techs,
-            String.join("\n", standards),
+            String.join(" ", standards),
             this.llm
         );
         
@@ -112,3 +112,4 @@ public class ValidationBlockBuilder {
     // use an LLM to rewrite the standards into groups
   }
 }
+

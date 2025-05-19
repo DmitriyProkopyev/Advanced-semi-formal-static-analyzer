@@ -51,9 +51,9 @@ public class CrossReferenceStandardGenerator {
                   %s
                   
                   Your task is use given context and abstract standards
-                  to derive concrete standards for each technology.\n
+                  to derive concrete standards for each technology (i.e. any framework, instrument, library).\n
                  
-                  The output should be in format <standard1> <standard2> <standardN>.
+                  The output should be in format <standard1> <standard2> <standardN> and contain only standards!!!
 
                   """.formatted(standards.toString(), contextString.toString());
     // load the prompt and combine with abstract standards
@@ -77,7 +77,8 @@ public class CrossReferenceStandardGenerator {
                   
                   %s
                   
-                  Your task is to derive concrete standards from given abstract standards for the technology.
+                  Your task is to derive concrete standards from given abstract standards for the technology (i.e. any framework, instrument, library).
+             
                   The output should be in format <standard1> <standard2> <standardN>.
                   """.formatted(standards.toString());
   }
