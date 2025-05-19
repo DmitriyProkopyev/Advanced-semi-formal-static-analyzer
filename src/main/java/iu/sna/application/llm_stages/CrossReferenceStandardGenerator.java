@@ -1,21 +1,24 @@
 package iu.sna.application.llm_stages;
 
+import dev.langchain4j.data.message.UserMessage;
+import dev.langchain4j.model.chat.request.ChatRequest;
 import iu.sna.infrastructure.LLM;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class CrossReferenceStandardGenerator {
   private final String prompt;
-
+  private final LLM llm;
 
   public CrossReferenceStandardGenerator(
           LLM llm,
           Collection<String> abstractStandards,
           Collection<Path> context) throws IOException {
+    this.llm = llm;
 
     StringBuilder contextString = new StringBuilder();
     StringBuilder standards = new StringBuilder();
@@ -43,13 +46,15 @@ public class CrossReferenceStandardGenerator {
                   
                   %s
                   
-                  You are given with context as well.:
+                  You are given with context as well:
                   
                   %s
                   
                   Your task is use given context and abstract standards
-                  to derive concrete standards. 
-                  Return only name of the standards separated by space.
+                  to derive concrete standards for each technology.\n
+                 
+                  The output should be in format <standard1> <standard2> <standardN>.
+
                   """.formatted(standards.toString(), contextString.toString());
     // load the prompt and combine with abstract standards
     // use context
@@ -57,7 +62,8 @@ public class CrossReferenceStandardGenerator {
 
   }
 
-  public CrossReferenceStandardGenerator(Collection<String> abstractStandards) {
+  public CrossReferenceStandardGenerator(Collection<String> abstractStandards, LLM llm) {
+    this.llm = llm;
     StringBuilder standards = new StringBuilder();
 
 
@@ -71,14 +77,30 @@ public class CrossReferenceStandardGenerator {
                   
                   %s
                   
-                  Your task is to derive concrete standards from given abstract standards
-                  Return only name of the standards separated by space.
+                  Your task is to derive concrete standards from given abstract standards for the technology.
+                  The output should be in format <standard1> <standard2> <standardN>.
                   """.formatted(standards.toString());
   }
 
-  public Map<String, String> generateFor(Collection<String> technologies) {
+  // TODO: тут должен же быть list???
+  public Map<String, List<String>> generateFor(Collection<String> technologies) {
     // use LLM to generate technology-specific standard
+    StringBuilder prompt = new StringBuilder();
+    Map <String, List<String>>res = new HashMap<>();
+    for (String technology : technologies) {
+    prompt.setLength(0);
+      prompt.append("You analyzing the following technology: \n");
+      prompt.append(technology).append("\n").append(this.prompt);
+
+      String response = this.llm.nextModel().chat(ChatRequest.builder().messages(UserMessage.from(prompt.toString())).build()).aiMessage().toString();
+
+      List <String> recieveStandards = Arrays.stream(response.split("\\s+")).filter(s -> !s.isEmpty()).toList();
+
+      res.put(technology, recieveStandards);
+    }
+
+
     // return standards for each technology
-    return null;
+    return res;
   }
 }

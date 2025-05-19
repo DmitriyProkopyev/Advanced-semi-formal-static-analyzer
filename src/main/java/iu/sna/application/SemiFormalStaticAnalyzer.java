@@ -66,7 +66,7 @@ public class SemiFormalStaticAnalyzer implements ApplicationFacade {
                     standardGenerator = new CrossReferenceStandardGenerator(this.llm, abstractStandards, context);
                     emitter.next("Analysis complete, user context is accounted for.");
                 } else {
-                    standardGenerator = new CrossReferenceStandardGenerator(abstractStandards);
+                    standardGenerator = new CrossReferenceStandardGenerator(abstractStandards, this.llm);
                 }
 
                 emitter.next("Preparing language-specific standards...");
