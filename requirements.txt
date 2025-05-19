@@ -1,5 +1,6 @@
 # Python dependencies
 pypandoc>=1.4.0
+scancode-toolkit==32.3.3
 
 # Note: System-level dependencies must be installed separately. Ensure the following are available:
 # - Pandoc (the converter binary)
