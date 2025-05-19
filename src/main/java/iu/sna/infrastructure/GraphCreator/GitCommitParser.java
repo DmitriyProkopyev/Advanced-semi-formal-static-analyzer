@@ -15,6 +15,7 @@ import org.eclipse.jgit.treewalk.EmptyTreeIterator;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -117,7 +118,9 @@ public final class GitCommitParser {
                             : diff.getNewPath();
 
                     if (path != null) {
-                        changedFiles.add(new ChangedFile(Paths.get(path), linesChanged));
+                        // Convert relative path to absolute path using repository's working directory
+                        Path absolutePath = repository.getWorkTree().toPath().resolve(path);
+                        changedFiles.add(new ChangedFile(absolutePath, linesChanged));
                     }
                 }
 

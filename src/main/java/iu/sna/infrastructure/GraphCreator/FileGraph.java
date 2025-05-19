@@ -174,7 +174,7 @@ public class FileGraph extends Graph<FileGraph.Vertex, FileGraph.Edge> {
     private void updateEdgeParameters(Vertex from, Vertex to) {
         Edge edge = findEdge(from, to);
         if (edge == null) {
-            edge = new Edge(from, to);
+            edge = addEdge(from,to);
         }
         edge.incrementCountCommonCommits();
         edge.incrementCountCommonChangedLines(from.getTotalChangedLines() + to.getTotalChangedLines());
@@ -428,7 +428,11 @@ public class FileGraph extends Graph<FileGraph.Vertex, FileGraph.Edge> {
      * @return Found vertex or null
      */
     public Vertex findVertex(final Path path) {
-        return getNodes().stream().filter(vertex -> vertex.getFilepath().equals(path)).findFirst().orElse(null);
+
+        return getNodes().stream()
+            .filter(vertex -> vertex.getFilepath().equals(path))
+            .findFirst()
+            .orElse(null);
     }
 
     /**
