@@ -1,0 +1,7 @@
+project.root:${user.dir}
+project.jsonWithAllFiles:src/main/resources/config/files.json
+constants.LANGUAGE_SPECIFIC_ANALYSIS_CONSTANT:3
+constants.LANGUAGE_SPECIFIC_ANALYSIS_COEF:1
+constants.COMMIT_IMPORTANCE_COEFFICIENT:1
+constants.COMMIT_LIMIT:10
+constants.LOCATION_VALUE_COEFFICIENT:1
