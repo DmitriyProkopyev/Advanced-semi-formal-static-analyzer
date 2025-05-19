@@ -77,7 +77,7 @@ public class SemiFormalStaticAnalyzer implements ApplicationFacade {
                 emitter.next("Technology-specific standards inference complete.");
 
                 emitter.next("Grouping standards into validation blocks...");
-                var validationBlockBuilder = new ValidationBlockBuilder(technologyStack);
+                var validationBlockBuilder = new ValidationBlockBuilder(technologyStack, this.llm);
                 var validationBlocks = validationBlockBuilder.buildFrom(languagesToStandards, technologiesToStandards);
                 emitter.next("Standards grouping and instructions inference complete.");
 

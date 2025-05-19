@@ -76,8 +76,9 @@ public class ValidationBlock {
                         %s
                         Your task is to generate instruction.Instruction sets should contain specific actionable steps and checklists that allow to
                         validate compliance with the requirements of given validation block and generate a clear
-                        list of misalignment's from these requirements
-                        """;
+                        list of misalignment's from these requirements.
+                        Return only instruction text!!!
+                        """.formatted(this.technologies, this.languages, this.standards);
 
     return this.llm.nextModel().chat(
             ChatRequest.builder().messages(UserMessage.from(userPrompt), SystemMessage.from(systemPrompt)).build()).aiMessage().toString();
