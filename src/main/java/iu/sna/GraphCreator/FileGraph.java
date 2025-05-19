@@ -5,21 +5,13 @@ import com.infrastructure.Graph;
 import iu.sna.GraphCreator.LanguageAnalyzer.*;
 import lombok.Getter;
 import lombok.Setter;
-import netscape.javascript.JSObject;
 import org.eclipse.jgit.lib.Repository;
-import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Implementation of a graph structure for analyzing file relationships in a codebase.
@@ -42,68 +34,39 @@ public class FileGraph extends Graph<FileGraph.Vertex, FileGraph.Edge> {
   private final ConfigReader config;
   private final Repository repository;
   // Конфигурационные параметры
-  private final String JSON_WITH_ALL_FILES_PATH;
   private final double LANGUAGE_SPECIFIC_ANALYSIS_CONSTANT;
   private final double LANGUAGE_SPECIFIC_ANALYSIS_COEF;
   private final double COMMIT_IMPORTANCE_COEFFICIENT;
   private final int COMMIT_LIMIT;
   private final double LOCATION_VALUE_COEFFICIENT;
 
-private LanguageAnalyzerService languageAnalyzerService;
+  private LanguageAnalyzerService languageAnalyzerService;
   private Collection<FileTechnologyStack> allFiles;
 
-  public FileGraph(
-          Collection<FileTechnologyStack> files, String configPath,
-          Repository repository) throws IOException {
+  public FileGraph(Collection<FileTechnologyStack> files, String configPath, Repository repository) throws IOException {
     this.config = new ConfigReader(configPath);
     this.pathToFilename = new HashMap<>();
     this.repository = repository;
 
     // Загружаем конфигурацию
-    this.JSON_WITH_ALL_FILES_PATH =
-            config.getString("project.jsonWithAllFiles");
-    this.LANGUAGE_SPECIFIC_ANALYSIS_CONSTANT =
-            config.getDouble("constants.LANGUAGE_SPECIFIC_ANALYSIS_CONSTANT");
-    this.LANGUAGE_SPECIFIC_ANALYSIS_COEF =
-            config.getDouble("constants.LANGUAGE_SPECIFIC_ANALYSIS_COEF");
-    this.COMMIT_IMPORTANCE_COEFFICIENT =
-            config.getDouble("constants.COMMIT_IMPORTANCE_COEFFICIENT");
-    this.COMMIT_LIMIT = config.getInt("constants.COMMIT_LIMIT");
-    this.LOCATION_VALUE_COEFFICIENT =
-            config.getDouble("constants.LOCATION_VALUE_COEFFICIENT");
 
-    this.languageAnalyzerService =
-            new LanguageAnalyzerService(List.of(new PydepsAnalyzer(),
-                    new MadgeAnalyzerJavaScript(),
-                    new MadgeAnalyzerTypeScript(), new JavaParserAnalyzer()
-            ));
+    this.LANGUAGE_SPECIFIC_ANALYSIS_CONSTANT = config.getDouble("constants.LANGUAGE_SPECIFIC_ANALYSIS_CONSTANT");
+    this.LANGUAGE_SPECIFIC_ANALYSIS_COEF = config.getDouble("constants.LANGUAGE_SPECIFIC_ANALYSIS_COEF");
+    this.COMMIT_IMPORTANCE_COEFFICIENT = config.getDouble("constants.COMMIT_IMPORTANCE_COEFFICIENT");
+    this.COMMIT_LIMIT = config.getInt("constants.COMMIT_LIMIT");
+    this.LOCATION_VALUE_COEFFICIENT = config.getDouble("constants.LOCATION_VALUE_COEFFICIENT");
+
+    this.languageAnalyzerService = new LanguageAnalyzerService(
+            List.of(new PydepsAnalyzer(), new MadgeAnalyzerJavaScript(), new MadgeAnalyzerTypeScript(), new JavaParserAnalyzer()));
 
     Collection<File> extractedFiles = new ArrayList<>();
     files.forEach(file -> extractedFiles.add(file.file()));
-
+    this.allFiles = files;
     // Инициализируем граф из переданных файлов
     initializeGraph(extractedFiles);
   }
 
-  /**
-   * Parse files recursively using DFS algorithm.
-   * Finds all valid files in the project directory.
-   *
-   * @throws IOException if file operations fail
-   */
-//  public void parseFiles() throws IOException {
-//    try (Stream<Path> walk = Files.walk(projectRoot)) {
-//      pathToFilename.putAll(walk
-//              .filter(this::isValidFile)
-//              .collect(Collectors.toMap(
-//                      path -> path,
-//                      path -> path.getFileName()
-//                              .toString(),
-//                      (oldPath, newPath) -> newPath
-//              )));
-//    }
-//    buildFileRelationships();
-//  }
+
   public void initializeGraph(Collection<File> files) throws IOException {
     for (File file : files) {
       Path path = file.toPath();
@@ -133,15 +96,11 @@ private LanguageAnalyzerService languageAnalyzerService;
    */
   private boolean isValidFile(Path path) {
     for (Path component : path) {
-      if (component.toString()
-              .startsWith(".")) {
+      if (component.toString().startsWith(".")) {
         return false;
       }
     }
-    return Files.isRegularFile(path) &&
-            !path.getFileName()
-                    .toString()
-                    .startsWith(".");
+    return Files.isRegularFile(path) && !path.getFileName().toString().startsWith(".");
   }
 
   /**
@@ -194,9 +153,7 @@ private LanguageAnalyzerService languageAnalyzerService;
    * @return Filename without extension
    */
   private String getFileNameWithoutExtension(String fileName) {
-    return fileName.contains(".") ?
-            fileName.substring(0, fileName.lastIndexOf(".")) :
-            fileName;
+    return fileName.contains(".") ? fileName.substring(0, fileName.lastIndexOf(".")) : fileName;
   }
 
   /**
@@ -208,11 +165,10 @@ private LanguageAnalyzerService languageAnalyzerService;
   private void updateEdgeParameters(Vertex from, Vertex to) {
     Edge edge = findEdge(from, to);
     if (edge == null) {
-      edge = new Edge(from,to);
+      edge = new Edge(from, to);
     }
     edge.incrementCountCommonCommits();
-    edge.incrementCountCommonChangedLines(
-            from.getTotalChangedLines() + to.getTotalChangedLines());
+    edge.incrementCountCommonChangedLines(from.getTotalChangedLines() + to.getTotalChangedLines());
   }
 
   /**
@@ -271,10 +227,7 @@ private LanguageAnalyzerService languageAnalyzerService;
     Vertex vertex = findVertex(filepath);
 
     if (vertex == null) {
-      vertex = addVertex(
-              filepath.getFileName()
-                      .toString(), filepath
-      );
+      vertex = addVertex(filepath.getFileName().toString(), filepath);
     }
 
     return vertex;
@@ -287,21 +240,11 @@ private LanguageAnalyzerService languageAnalyzerService;
     for (Graph.EdgeInfo<Vertex, Edge> edgeInfo : getEdges()) {
       try {
         double weight = calculateCompoundWeight(edgeInfo.edgeData());
-        edgeInfo.edgeData()
-                .setCompoundWeight(
-                        edgeInfo.edgeData()
-                                .getCompoundWeight() + weight
-                );
+        edgeInfo.edgeData().setCompoundWeight(edgeInfo.edgeData().getCompoundWeight() + weight);
       } catch (ArithmeticException e) {
         System.out.println(
-                "ArithmeticException in updateCompoundPower for edge " +
-                        edgeInfo.source()
-                                .getFilename() + " -> " +
-                        edgeInfo.destination()
-                                .getFilename() + ": " + e.getMessage()
-        );
-        edgeInfo.edgeData()
-                .setCompoundWeight(0);
+                "ArithmeticException in updateCompoundPower for edge " + edgeInfo.source().getFilename() + " -> " + edgeInfo.destination().getFilename() + ": " + e.getMessage());
+        edgeInfo.edgeData().setCompoundWeight(0);
       }
     }
   }
@@ -317,18 +260,12 @@ private LanguageAnalyzerService languageAnalyzerService;
     Vertex file2 = edge.getTo();
 
     int commonFileChangesCounter = edge.getCountCommonCommits();
-    double avgCommonChangedLines =
-            (double) edge.getCountCommonChangedLines() / commonFileChangesCounter;
-    int totalAandBcommits =
-            file1.getCountCommits() + file2.getCountCommits() - commonFileChangesCounter;
-    double avgLineChangesInBothFiles =
-            calculateAverageLineChanges(file1, file2);
+    double avgCommonChangedLines = (double) edge.getCountCommonChangedLines() / commonFileChangesCounter;
+    int totalAandBcommits = file1.getCountCommits() + file2.getCountCommits() - commonFileChangesCounter;
+    double avgLineChangesInBothFiles = calculateAverageLineChanges(file1, file2);
 
     return calculateCompound(
-            commonFileChangesCounter,
-            avgCommonChangedLines,
-            totalAandBcommits,
-            avgLineChangesInBothFiles,
+            commonFileChangesCounter, avgCommonChangedLines, totalAandBcommits, avgLineChangesInBothFiles,
             edge.getFILE_LOCATION_COEF()
     );
   }
@@ -341,8 +278,7 @@ private LanguageAnalyzerService languageAnalyzerService;
    * @return Average number of line changes
    */
   private double calculateAverageLineChanges(Vertex file1, Vertex file2) {
-    return ((double) file1.getTotalChangedLines() / file1.getCountCommits()) +
-            ((double) file2.getTotalChangedLines() / file2.getCountCommits());
+    return ((double) file1.getTotalChangedLines() / file1.getCountCommits()) + ((double) file2.getTotalChangedLines() / file2.getCountCommits());
   }
 
   /**
@@ -356,11 +292,8 @@ private LanguageAnalyzerService languageAnalyzerService;
    * @return Calculated compound value
    */
   private double calculateCompound(
-          int commonFileChangesCounter,
-          double avgCommonChangedLines,
-          int totalAandBcommits,
-          double avgLineChangesInBothFiles,
-          double fileLocationCoef) {
+          int commonFileChangesCounter, double avgCommonChangedLines, int totalAandBcommits,
+          double avgLineChangesInBothFiles, double fileLocationCoef) {
 
     if (commonFileChangesCounter == 0 || totalAandBcommits == 0 || avgLineChangesInBothFiles == 0) {
       return 0.0;
@@ -371,8 +304,7 @@ private LanguageAnalyzerService languageAnalyzerService;
       return 0.0;
     }
 
-    double result = (((double) commonFileChangesCounter * avgCommonChangedLines)
-            / denominator) * fileLocationCoef * COMMIT_IMPORTANCE_COEFFICIENT;
+    double result = (((double) commonFileChangesCounter * avgCommonChangedLines) / denominator) * fileLocationCoef * COMMIT_IMPORTANCE_COEFFICIENT;
 
     if (Double.isNaN(result) || Double.isInfinite(result)) {
       return 0.0;
@@ -416,20 +348,19 @@ private LanguageAnalyzerService languageAnalyzerService;
 //    }
 //    return res;
 //  }
-
-private Map<String, List<String>> groupFilesByLanguage() {
+  private Map<String, List<String>> groupFilesByLanguage() {
     Map<String, List<String>> groupedFiles = new HashMap<>();
-    
+
     for (FileTechnologyStack fileStack : allFiles) {
-        String language = fileStack.language().toLowerCase();
-        File file = fileStack.file();
-        
-        groupedFiles.computeIfAbsent(language, k -> new ArrayList<>())
-                   .add(file.getAbsolutePath());
+      String language = fileStack.language().toLowerCase();
+      File file = fileStack.file();
+
+      groupedFiles.computeIfAbsent(language, k -> new ArrayList<>()).add(file.getAbsolutePath());
     }
-    
+
     return groupedFiles;
-}
+  }
+
   /**
    * Supported languages:
    * - python
@@ -443,11 +374,7 @@ private Map<String, List<String>> groupFilesByLanguage() {
     for (String language : groupedFiles.keySet()) {
       List<String> filenames = groupedFiles.get(language);
 
-      List<Map.Entry<Path, Path>> toolOutput =
-              languageAnalyzerService.AnalyzeDependencies(
-                      language,
-                      filenames
-              );
+      List<Map.Entry<Path, Path>> toolOutput = languageAnalyzerService.AnalyzeDependencies(language, filenames);
       for (Map.Entry<Path, Path> entry : toolOutput) {
         Path pFrom = entry.getKey();
         Path pTo = entry.getValue();
@@ -455,28 +382,19 @@ private Map<String, List<String>> groupFilesByLanguage() {
         Vertex to = findVertex(pTo);
         Edge edge = findEdge(from, to);
         if (from == null) {
-          from = addVertex(
-                  pFrom.getFileName()
-                          .toString(), pFrom
-          );
+          from = addVertex(pFrom.getFileName().toString(), pFrom);
         }
 
 
         if (to == null) {
-          to = addVertex(
-                  pTo.getFileName()
-                          .toString(), pTo
-          );
+          to = addVertex(pTo.getFileName().toString(), pTo);
 
         }
         if (edge == null) {
           edge = addEdge(from, to);
         }
-        // пока *2 + 3
-        edge.setCompoundWeight(
-                edge.getCompoundWeight() * LANGUAGE_SPECIFIC_ANALYSIS_COEF +
-                        LANGUAGE_SPECIFIC_ANALYSIS_CONSTANT);
-        System.out.println(from.getFilepath() + " -> " + to.getFilepath());
+        edge.setCompoundWeight(edge.getCompoundWeight() * LANGUAGE_SPECIFIC_ANALYSIS_COEF + LANGUAGE_SPECIFIC_ANALYSIS_CONSTANT);
+//        System.out.println(from.getFilepath() + " -> " + to.getFilepath());
       }
     }
   }
@@ -501,11 +419,7 @@ private Map<String, List<String>> groupFilesByLanguage() {
    * @return Found vertex or null
    */
   public Vertex findVertex(final Path path) {
-    return getNodes().stream()
-            .filter(vertex -> vertex.getFilepath()
-                    .equals(path))
-            .findFirst()
-            .orElse(null);
+    return getNodes().stream().filter(vertex -> vertex.getFilepath().equals(path)).findFirst().orElse(null);
   }
 
   /**
@@ -516,12 +430,8 @@ private Map<String, List<String>> groupFilesByLanguage() {
    * @return Found edge or null
    */
   public Edge findEdge(Vertex from, Vertex to) {
-    return getOutgoingEdges(from).stream()
-            .filter(edgeInfo -> edgeInfo.destination()
-                    .equals(to))
-            .map(Graph.EdgeInfo::edgeData)
-            .findFirst()
-            .orElse(null);
+    return getOutgoingEdges(from).stream().filter(edgeInfo -> edgeInfo.destination().equals(to)).map(Graph.EdgeInfo::edgeData).findFirst().orElse(
+            null);
   }
 
   /**
@@ -670,12 +580,7 @@ private Map<String, List<String>> groupFilesByLanguage() {
     Edge(final Vertex fromFile, final Vertex toFile) {
       this.from = fromFile;
       this.to = toFile;
-      initFileLocationCoef(
-              fromFile.getFilepath()
-                      .toString(),
-              toFile.getFilepath()
-                      .toString()
-      );
+      initFileLocationCoef(fromFile.getFilepath().toString(), toFile.getFilepath().toString());
     }
 
     /**
@@ -695,8 +600,7 @@ private Map<String, List<String>> groupFilesByLanguage() {
       double mean = (file1Depth + file2Depth) / 2.0;
 
       double maxDepth = Math.max(file1Depth, file2Depth);
-      double depthRatio =
-              maxDepth > 0 ? (mean - commonRootDepth) / maxDepth : 0;
+      double depthRatio = maxDepth > 0 ? (mean - commonRootDepth) / maxDepth : 0;
 
       this.FILE_LOCATION_COEF = (1.5 - depthRatio) * LOCATION_VALUE_COEFFICIENT;
     }
@@ -741,8 +645,7 @@ private Map<String, List<String>> groupFilesByLanguage() {
       if (this == o) return true;
       if (o == null || getClass() != o.getClass()) return false;
       Edge edge = (Edge) o;
-      return Objects.equals(from, edge.from) &&
-              Objects.equals(to, edge.to);
+      return Objects.equals(from, edge.from) && Objects.equals(to, edge.to);
     }
 
     @Override

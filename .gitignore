@@ -4,8 +4,10 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+.idea/
 PipelineLLM/
 src/main/java/iu/sna/PipeLine/api-keys.txt
+java_files.json
 
 ### STS ###
 .apt_generated

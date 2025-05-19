@@ -6,7 +6,6 @@ import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.diff.Edit;
 import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
@@ -15,9 +14,9 @@ import org.eclipse.jgit.treewalk.EmptyTreeIterator;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Parse input git repository.
@@ -56,7 +55,7 @@ public final class GitCommitParser {
               .setMaxCount(numberOfCommits)
               .call();
       for (RevCommit commit : commits) {
-        List<ChangedFile>changedFiles = getChangedLinesInCommit(
+        List<ChangedFile> changedFiles = getChangedLinesInCommit(
 
                 commit.getId()
         );

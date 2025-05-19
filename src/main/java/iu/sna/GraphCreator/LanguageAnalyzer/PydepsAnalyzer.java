@@ -1,12 +1,5 @@
 package iu.sna.GraphCreator.LanguageAnalyzer;
 
-import ch.qos.logback.core.joran.sanity.Pair;
-import iu.sna.GraphCreator.FileGraph;
-import org.eclipse.jgit.diff.ContentSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -18,13 +11,12 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Component
 public class PydepsAnalyzer implements LanguageAnalyzer {
-  @Value("${project.pythonVenv}")
   private String PATH_TO_VENV;
   private static final Pattern DEPENDENCY_PATTERN = Pattern.compile("(\\w+)" +
           "\\s*->\\s*(\\w+)\\s*\\[.*?\\];");
 
+  // TODO: что делать с venv?
   private String runTool(List<String> fileParam) throws IOException {
     List<String> command = new ArrayList<>();
     command.add(PATH_TO_VENV + "/bin/pydeps");

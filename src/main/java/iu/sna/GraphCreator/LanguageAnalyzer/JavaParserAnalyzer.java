@@ -13,15 +13,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-@Component
-public class JavaParserAnalyzer implements  LanguageAnalyzer{
+
+public class JavaParserAnalyzer implements LanguageAnalyzer {
   @Override
   public List<Map.Entry<Path, Path>> analyzeDependencies(
           List<String> fileString) throws IOException {
     StringBuffer dependencies = new StringBuffer();
     JavaParser parser = new JavaParser();
-    List <Map.Entry<Path, Path>> res = new ArrayList<>();
-    for (String filepath: fileString) {
+    List<Map.Entry<Path, Path>> res = new ArrayList<>();
+    for (String filepath : fileString) {
       try {
 
 
@@ -42,7 +42,7 @@ public class JavaParserAnalyzer implements  LanguageAnalyzer{
             }
           }
         }
-      }catch (NoSuchFileException e) {
+      } catch (NoSuchFileException e) {
         System.out.println("No such file: " + e);
       }
     }
