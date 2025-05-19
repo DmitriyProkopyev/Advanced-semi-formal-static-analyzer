@@ -1,6 +1,8 @@
 package iu.sna.cli.validator;
 
 import iu.sna.cli.FileType;
+import iu.sna.cli.validator.ValidationException;
+
 import lombok.Getter;
 
 import java.io.File;
