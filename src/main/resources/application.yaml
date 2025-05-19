@@ -1,9 +1,22 @@
 spring:
   application:
     name: 'Advanced-semi-formal-static-analyzer'
+<<<<<<< HEAD
   shell:
     interactive:
       enabled: false
 logging:
   level:
     root: off
+=======
+constants:
+  LOCATION_VALUE_COEFFICIENT: 1
+  COMMIT_IMPORTANCE_COEFFICIENT: 1
+  COMMIT_LIMIT: 10
+  LANGUAGE_SPECIFIC_ANALYSIS_CONSTANT: 3
+  LANGUAGE_SPECIFIC_ANALYSIS_COEF: 2
+project:
+  pythonVenv: ""
+  jsonWithAllFiles: "/home/aziz/Projects/Advanced-semi-formal-static-analyzer/java_files.json"
+  root: ""
+>>>>>>> implement_language_specific_analsis
