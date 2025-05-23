@@ -48,8 +48,8 @@ public class StackAnalyzer {
      * Анализирует проект и возвращает список FileTechnologyStack, а также выводит их на экран
      */
     public List<FileTechnologyStack> analyzeProjectFiles(String projectPath) {
-        ScanCodeAnalyzer sca = new ScanCodeAnalyzer();
-        List<FileTechnologyStack> stacks = sca.analyzeFiles(new File(projectPath));
+        ScanCodeAnalyzer scanner = new ScanCodeAnalyzer();
+        List<FileTechnologyStack> stacks = scanner.analyzeFiles(new File(projectPath));
         // ScanCodeAnalyzer.printAll(stacks);
         return stacks;
     }

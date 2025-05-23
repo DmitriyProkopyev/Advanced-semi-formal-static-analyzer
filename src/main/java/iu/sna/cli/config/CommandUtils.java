@@ -1,14 +1,5 @@
 package iu.sna.cli.config;
 
-import iu.sna.application.ApplicationFacade;
-import iu.sna.application.SemiFormalStaticAnalyzer;
-import iu.sna.cli.validator.ValidationException;
-import iu.sna.infrastructure.LLM;
-import iu.sna.infrastructure.LLMType;
-import iu.sna.infrastructure.Tree;
-import iu.sna.infrastructure.Tree.TreeNode;
-import lombok.experimental.UtilityClass;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -22,12 +13,22 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import iu.sna.application.ApplicationFacade;
+import iu.sna.application.SemiFormalStaticAnalyzer;
+import iu.sna.cli.validator.ValidationException;
+import iu.sna.infrastructure.LLM;
+import iu.sna.infrastructure.LLMType;
+import iu.sna.infrastructure.Tree;
+import iu.sna.infrastructure.Tree.TreeNode;
+import lombok.experimental.UtilityClass;
+
 @UtilityClass
 public class CommandUtils {
 
     private static final String SETUP_DIRECTORY = "src/main/resources/setup";
     private static final String API_KEYS_FILE = "api_keys.txt";
     private static final String SETUP_TYPE_FILE = "setup_type.txt";
+    public static final String tempDirectory = "src/main/resources/temp/";
 
     public static ApplicationFacade createApplicationFacade(SetupType setupType, Collection<String> keys) {
         return new SemiFormalStaticAnalyzer(

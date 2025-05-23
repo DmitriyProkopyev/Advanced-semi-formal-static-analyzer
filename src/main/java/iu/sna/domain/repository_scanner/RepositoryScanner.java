@@ -1,12 +1,14 @@
 package iu.sna.domain.repository_scanner;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 import iu.sna.domain.repository_scanner.stack_analysis_core.tool.StackAnalyzer;
 import iu.sna.infrastructure.Tree;
+import iu.sna.infrastructure.Tree.TreeNode;
 
 public class RepositoryScanner {
     private final Tree<Path> directories;
@@ -19,9 +21,22 @@ public class RepositoryScanner {
     }
 
     public Collection<FileTechnologyStack> scan() {
-        // Analyze all files in the repository and cache result
-        Path rootPath = directories.getRoot().getData();
-        lastScanResult = analyzer.analyzeProjectFiles(rootPath.toString());
+        // Scan through all subdirs and aggregate results
+        Collection<FileTechnologyStack> aggregatedResults = new ArrayList<>();
+        
+        // WARNING! TREE IS RECURSIVE! FIX THAT!
+        TreeNode<Path> root = directories.getRoot();
+        root.getChildren().forEach(child -> {
+            directories.traversePreOrder(directory -> {
+                Collection<FileTechnologyStack> result = analyzer.analyzeProjectFiles(directory.toString());
+                aggregatedResults.addAll(result);
+            });
+        });
+
+        Collection<FileTechnologyStack> result = analyzer.analyzeProjectFiles(directories.getRoot().getData().toString());
+
+        lastScanResult = aggregatedResults;
+        // lastScanResult = result;
         return lastScanResult;
     }
 
