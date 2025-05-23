@@ -5,5 +5,4 @@ import java.util.Collection;
 
 public record FileTechnologyStack(File file,
                                   String language,
-                                  Collection<String> technologies) {
-}
+                                  Collection<String> technologies) {}

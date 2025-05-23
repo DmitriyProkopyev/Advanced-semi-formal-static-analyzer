@@ -1,0 +1,133 @@
+{
+  "NFRs": ["Security", "Performance", "Scalability", "Availability", "Simplicity",
+    "Maintainability", "Testability", "Resilience", "Recoverability",
+    "Recoverability", "Usability", "Adaptability", "Interoperability"],
+  "mapping": {
+    "Modular Architecture": {
+      "Maintainability": 3,
+      "Testability": 3,
+      "Adaptability": 2,
+      "Scalability": 2,
+      "Simplicity": -2
+    },
+    "Dependency Injection": {
+      "Testability": 2,
+      "Maintainability": 2,
+      "Adaptability": 2,
+      "Simplicity": -3
+    },
+    "DRY & Single Responsibility Principles": {
+      "Maintainability": 3,
+      "Testability": 2,
+      "Simplicity": -1
+    },
+    "Input/Output Validation & Sanitization": {
+      "Security": 3,
+      "Resilience": 2,
+      "Simplicity": -1
+    },
+    "Constant Usage (No Magic Numbers)": {
+      "Maintainability": 1,
+      "Simplicity": -1
+    },
+    "Defensive Programming (Null/Edge Cases)": {
+      "Resilience": 3,
+      "Security": 1,
+      "Simplicity": -1
+    },
+    "Error Handling & Propagation": {
+      "Resilience": 2,
+      "Recoverability": 2,
+      "Simplicity": -1
+    },
+    "Security Hardening (AuthN/Z, XSS, Injection)": {
+      "Security": 3,
+      "Resilience": 2,
+      "Performance": -1
+    },
+    "Resource Management (Leaks/Thread Safety)": {
+      "Performance": 2,
+      "Resilience": 2,
+      "Maintainability": -1
+    },
+    "Testing Strategy (Unit/E2E/Performance)": {
+      "Testability": 3,
+      "Resilience": 2,
+      "Security": 1,
+      "Maintainability": 2,
+      "Simplicity": -2
+    },
+    "Code Hygiene (No Dead Code/Smells)": {
+      "Maintainability": 2,
+      "Testability": 1
+    },
+    "Concurrency Safety (No Deadlocks/Races)": {
+      "Performance": 2,
+      "Resilience": 3,
+      "Maintainability": -2,
+      "Simplicity": -2
+    },
+    "Versioned API Contracts": {
+      "Interoperability": 3,
+      "Compatibility": 2,
+      "Maintainability": -1,
+      "Simplicity": -1
+    },
+    "Data Format Agnosticism (JSON/XML/Protobuf)": {
+      "Interoperability": 3,
+      "Adaptability": 2,
+      "Performance": -1
+    },
+    "Cross-Platform Client Libraries": {
+      "Interoperability": 3,
+      "Usability": 2,
+      "Maintainability": -2
+    },
+    "Automated Backup/Restore Mechanisms": {
+      "Recoverability": 3,
+      "Resilience": 2,
+      "Performance": -1
+    },
+    "Transactional Rollback Support": {
+      "Recoverability": 3,
+      "Resilience": 2,
+      "Simplicity": -2
+    },
+    "Immutable Audit Logs": {
+      "Recoverability": 2,
+      "Security": 2,
+      "Performance": -1
+    },
+    "Disaster Recovery Testing": {
+      "Recoverability": 3,
+      "Resilience": 2,
+      "Testability": -1
+    },
+    "Redundant Service Deployment": {
+      "Availability": 3,
+      "Scalability": 2,
+      "Simplicity": -2
+    },
+    "Graceful Degradation Mechanisms": {
+      "Availability": 3,
+      "Maintainability": -1
+    },
+    "Health Monitoring & Auto-Recovery": {
+      "Availability": 3,
+      "Resilience": 2,
+      "Simplicity": -1
+    },
+    "Load-Balanced Request Routing": {
+      "Availability": 3,
+      "Scalability": 3,
+      "Performance": -1
+    },
+    "Idempotent Operation Design": {
+      "Availability": 2,
+      "Resilience": 2,
+      "Interoperability": 1,
+      "Maintainability": -2,
+      "Simplicity": -2
+    }
+  }
+}

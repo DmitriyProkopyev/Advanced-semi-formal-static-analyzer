@@ -25,18 +25,18 @@ import java.util.List;
 @UtilityClass
 public class CommandUtils {
 
-    private final String SETUP_DIRECTORY = "src/main/resources/setup";
-    private final String API_KEYS_FILE = "api_keys.txt";
-    private final String SETUP_TYPE_FILE = "setup_type.txt";
+    private static final String SETUP_DIRECTORY = "src/main/resources/setup";
+    private static final String API_KEYS_FILE = "api_keys.txt";
+    private static final String SETUP_TYPE_FILE = "setup_type.txt";
 
-    public ApplicationFacade createApplicationFacade(SetupType setupType, Collection<String> keys) {
+    public static ApplicationFacade createApplicationFacade(SetupType setupType, Collection<String> keys) {
         return new SemiFormalStaticAnalyzer(
                 LLMType.valueOf(setupType.name()),
                 new LLM(keys, LLMType.valueOf(setupType.name()))
         );
     }
 
-    public void setApiKeys(String[] keys, Path fileKeys) throws IOException {
+    public static void setApiKeys(String[] keys, Path fileKeys) throws IOException {
         Path resourcesPath = Paths.get(SETUP_DIRECTORY);
         Path apiKeysPath = resourcesPath.resolve(API_KEYS_FILE);
 
@@ -56,7 +56,7 @@ public class CommandUtils {
         }
     }
 
-    public SetupType getSetupType() throws IOException {
+    public static SetupType getSetupType() throws IOException {
         Path setupTypePath = Paths.get(SETUP_DIRECTORY, SETUP_TYPE_FILE);
 
         if (!Files.exists(setupTypePath)) {
@@ -73,7 +73,7 @@ public class CommandUtils {
         throw new ValidationException("SetupType is null");
     }
 
-    public void setSetupType(SetupType type) throws IOException {
+    public static void setSetupType(SetupType type) throws IOException {
         Path resourcesPath = Paths.get(SETUP_DIRECTORY);
         Path setupTypePath = resourcesPath.resolve(SETUP_TYPE_FILE);
 
@@ -86,7 +86,7 @@ public class CommandUtils {
         }
     }
 
-    public List<String> getApiKeys() throws IOException {
+    public static List<String> getApiKeys() throws IOException {
         Path apiKeysPath = Paths.get(SETUP_DIRECTORY, API_KEYS_FILE);
         List<String> keys = new ArrayList<>();
 

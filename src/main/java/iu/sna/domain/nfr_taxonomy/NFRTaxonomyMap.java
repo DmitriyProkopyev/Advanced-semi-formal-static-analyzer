@@ -4,6 +4,7 @@ import iu.sna.application.Config;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -12,10 +13,13 @@ public class NFRTaxonomyMap {
     private final List<NFRTaxonomyItem> bottomLayer;
 
     public NFRTaxonomyMap() {
-        var path = Config.NFRTaxonomy;
-        topLayer = new ArrayList<>();
-        bottomLayer = new ArrayList<>();
-        // read both layers from the config
+        this.topLayer = Config.NFRs;
+        this.bottomLayer = new ArrayList<>();
+
+        for (String name : Config.NFRMapping.keySet()) {
+            var item = new NFRTaxonomyItem(name, Config.NFRMapping.getJSONObject(name));
+            this.bottomLayer.add(item);
+        }
     }
 
     public Collection<String> readNFRs() {
@@ -23,9 +27,19 @@ public class NFRTaxonomyMap {
     }
 
     public Collection<String> unpackNFRSequence(Iterable<Integer> priorities) {
-        // reorder topLayer using priorities
-        // use NFRTaxonomyItem.evaluate() to map top layer to bottom layer items
-        // return the names of selected bottom layer items
-        return null;
+        var prioritizedNFRs = new HashMap<String, Double>();
+        int priority = this.topLayer.size() - 1;
+
+        for (int index : priorities) {
+            String nfr = this.topLayer.get(index);
+            double value = Math.pow(Config.priorityFactor, priority--);
+            prioritizedNFRs.put(nfr, value);
+        }
+
+        var practices = this.bottomLayer.stream().
+                filter((item) -> item.evaluate(prioritizedNFRs)).
+                map((item) -> item.name).
+                toList();
+        return practices;
     }
 }

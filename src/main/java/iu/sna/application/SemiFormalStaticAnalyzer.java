@@ -48,6 +48,7 @@ public class SemiFormalStaticAnalyzer implements ApplicationFacade {
         return Flux.create(emitter -> new Thread(() -> {
             try {
                 emitter.next("User priorities understood, inferring best fit practices...");
+                /*
                 var abstractStandards = taxonomyMap.unpackNFRSequence(priorities);
                 emitter.next("Best fit practices inference complete.");
 
@@ -87,6 +88,8 @@ public class SemiFormalStaticAnalyzer implements ApplicationFacade {
                 profiles.put(profile.name, profile);
                 emitter.next("Profile created successfully!");
                 emitter.complete();
+
+                 */
             } catch (Exception exception) {
                 emitter.next("Process interrupted due to a critical error...");
                 emitter.error(exception);
@@ -102,16 +105,21 @@ public class SemiFormalStaticAnalyzer implements ApplicationFacade {
         return Flux.create(emitter -> new Thread(() -> {
             try {
                 emitter.next("Loading the project profile...");
-                Profile profile;
+                return;
+                /*Profile profile;
                 if (profiles.containsKey(profileName))
                     profile = profiles.get(profileName);
                 else
-                    profile = Profile.loadFrom(Config.profilesDirectory.resolve(profileName).toFile());
+                    profile = Profile.loadFrom(Config.profilesDirectory.resolve(profileName).toFile(), llm);
                 emitter.next("Profile loading complete.");
 
                 emitter.next("Scanning the repository for updates...");
                 var scanner = new RepositoryScanner(filteredDirectories);
                 var technologyStack = scanner.scan();
+                var languages = scanner.getAllLanguages();
+                emitter.next("Used languages: " + String.join(",", languages));
+                var technologies = scanner.getAllTechnologies();
+                emitter.next("Used technologies: " + String.join(",", technologies));
 
                 emitter.next("Updates acquired, mapping the project files to validation blocks...");
                 var mapping = profile.mapOntoValidationBlocks(technologyStack);
@@ -166,6 +174,8 @@ public class SemiFormalStaticAnalyzer implements ApplicationFacade {
                 pdfBuilder.fromMarkdown(report, reportTargetLocation);
                 emitter.next("Quality report successfully generated at " + reportTargetLocation.getAbsolutePath() + "!");
                 emitter.complete();
+
+                 */
             } catch (Exception exception) {
                 emitter.next("Process interrupted due to a critical error...");
                 emitter.error(exception);

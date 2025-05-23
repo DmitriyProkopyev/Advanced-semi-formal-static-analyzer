@@ -16,6 +16,10 @@ public final class Validator {
     private Validator() {
     }
 
+    public static Validator getInstance() {
+        return instance;
+    }
+
     public void validate() {
         System.out.println("[INFO]: validations are passed");
     }

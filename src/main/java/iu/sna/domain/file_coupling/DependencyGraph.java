@@ -32,18 +32,19 @@ public class DependencyGraph extends Graph<FileTechnologyStack, Double> {
 
             if (fileStack != null) {
                 addNode(fileStack);
-            }
-        }
 
-        // Copy edges with weights
-        for (Graph.EdgeInfo<FileGraph.Vertex, FileGraph.Edge> edgeInfo : fileGraph.getEdges()) {
-            FileTechnologyStack source = files.stream().filter(f -> f.file().equals(edgeInfo.source().getFilepath().toFile())).findFirst().orElse(null);
 
-            FileTechnologyStack destination = files.stream().filter(f -> f.file().equals(edgeInfo.destination().getFilepath().toFile())).findFirst().orElse(
-                    null);
+                // Copy edges with weights
+                for (Graph.EdgeInfo<FileGraph.Vertex, FileGraph.Edge> edgeInfo : fileGraph.getEdges()) {
+                    FileTechnologyStack source = files.stream().filter(f -> f.file().equals(edgeInfo.source().getFilepath().toFile())).findFirst().orElse(null);
 
-            if (source != null && destination != null) {
-                addEdge(source, destination, edgeInfo.edgeData().getCompoundWeight());
+                    FileTechnologyStack destination = files.stream().filter(f -> f.file().equals(edgeInfo.destination().getFilepath().toFile())).findFirst().orElse(
+                            null);
+
+                    if (source != null && destination != null) {
+                        addEdge(source, destination, edgeInfo.edgeData().getCompoundWeight());
+                    }
+                }
             }
         }
     }
