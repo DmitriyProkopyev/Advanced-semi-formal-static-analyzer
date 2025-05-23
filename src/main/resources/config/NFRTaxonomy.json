@@ -1,6 +1,6 @@
 {
-  "NFRs": ["Security", "Performance", "Scalability", "Availability", "Simplicity",
-    "Maintainability", "Testability", "Resilience", "Recoverability",
+  "NFRs": ["Security", "Performance", "Scalability", "Availability",
+    "Simplicity", "Maintainability", "Testability", "Resilience",
     "Recoverability", "Usability", "Adaptability", "Interoperability"],
   "mapping": {
     "Modular Architecture": {
@@ -69,7 +69,6 @@
     },
     "Versioned API Contracts": {
       "Interoperability": 3,
-      "Compatibility": 2,
       "Maintainability": -1,
       "Simplicity": -1
     },

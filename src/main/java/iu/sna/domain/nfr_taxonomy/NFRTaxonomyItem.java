@@ -21,7 +21,7 @@ public class NFRTaxonomyItem {
     public boolean evaluate(Map<String, Double> topLayerItems) {
         double totalEffect = 0;
         for (String nfr : effects.keySet())
-            totalEffect += topLayerItems.get(nfr) * effects.get(nfr);
+            totalEffect += topLayerItems.get(nfr) * (double)effects.get(nfr);
 
         return totalEffect > 0;
     }

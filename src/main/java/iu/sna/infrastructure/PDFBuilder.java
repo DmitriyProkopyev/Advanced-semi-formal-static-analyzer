@@ -1,14 +1,16 @@
 package iu.sna.infrastructure;
 
 import java.io.File;
+import java.io.IOException;
 
 public class PDFBuilder {
+    private final Wrapper wrapper;
+
     public PDFBuilder() {
-        // add required settings here
+        this.wrapper = new Wrapper();
     }
 
-    public void fromMarkdown(File original, File target) {
-        // convert original to pdf
-        // put the pdf to target location
+    public void fromMarkdown(File original, File target) throws IOException, InterruptedException {
+        this.wrapper.convert(original.getAbsolutePath(), target.getAbsolutePath());
     }
 }

@@ -78,7 +78,6 @@ public class CrossReferenceStandardGenerator {
                 """.formatted(standards.toString());
     }
 
-    // TODO: тут должен же быть list???
     public Map<String, List<String>> generateFor(Collection<String> technologies) {
         // use LLM to generate technology-specific standard
         StringBuilder prompt = new StringBuilder();

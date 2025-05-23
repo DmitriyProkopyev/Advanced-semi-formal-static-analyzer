@@ -17,6 +17,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -48,7 +49,6 @@ public class SemiFormalStaticAnalyzer implements ApplicationFacade {
         return Flux.create(emitter -> new Thread(() -> {
             try {
                 emitter.next("User priorities understood, inferring best fit practices...");
-                /*
                 var abstractStandards = taxonomyMap.unpackNFRSequence(priorities);
                 emitter.next("Best fit practices inference complete.");
 
@@ -88,8 +88,6 @@ public class SemiFormalStaticAnalyzer implements ApplicationFacade {
                 profiles.put(profile.name, profile);
                 emitter.next("Profile created successfully!");
                 emitter.complete();
-
-                 */
             } catch (Exception exception) {
                 emitter.next("Process interrupted due to a critical error...");
                 emitter.error(exception);
@@ -97,7 +95,6 @@ public class SemiFormalStaticAnalyzer implements ApplicationFacade {
         }).start(), FluxSink.OverflowStrategy.BUFFER);
     }
 
-    // include profile updates later if possible
     @Override
     public Flux<String> scan(String profileName,
                              Tree<Path> filteredDirectories,
@@ -105,8 +102,7 @@ public class SemiFormalStaticAnalyzer implements ApplicationFacade {
         return Flux.create(emitter -> new Thread(() -> {
             try {
                 emitter.next("Loading the project profile...");
-                return;
-                /*Profile profile;
+                Profile profile;
                 if (profiles.containsKey(profileName))
                     profile = profiles.get(profileName);
                 else
@@ -162,10 +158,9 @@ public class SemiFormalStaticAnalyzer implements ApplicationFacade {
 
                 emitter.next("Analysis complete, building the final report...");
                 var reportGenerator = new ReportGenerator("\n\n## ",
-                        "\n\n", Config.tempDirectory);
+                        "\n\n", "\n\n___\n\n", Config.tempDirectory);
 
-                var datetime = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").
-                        format(LocalDateTime.now());
+                var datetime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"));
                 var reportName = String.format("Project %s quality report from %s",
                         profileName, datetime);
                 var report = reportGenerator.generateReport(reportName, criticism);
@@ -174,8 +169,6 @@ public class SemiFormalStaticAnalyzer implements ApplicationFacade {
                 pdfBuilder.fromMarkdown(report, reportTargetLocation);
                 emitter.next("Quality report successfully generated at " + reportTargetLocation.getAbsolutePath() + "!");
                 emitter.complete();
-
-                 */
             } catch (Exception exception) {
                 emitter.next("Process interrupted due to a critical error...");
                 emitter.error(exception);

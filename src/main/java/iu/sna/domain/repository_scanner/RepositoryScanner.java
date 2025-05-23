@@ -42,12 +42,4 @@ public class RepositoryScanner {
         }
         return techs;
     }
-    public static void main(String[] args) {
-        RepositoryScanner scanner = new RepositoryScanner(
-            new Tree<>(Path.of("Z:\\Users\\nblJlecoc\\Desktop\\хуй\\TOMERGE"))
-        );
-        scanner.scan();
-        System.out.println(scanner.getAllLanguages());
-        System.out.println(scanner.getAllTechnologies());
-    }
 }

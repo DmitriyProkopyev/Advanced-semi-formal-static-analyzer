@@ -30,40 +30,6 @@ public class Profile {
         this.validationBlocks = validationBlocks;
     }
 
-    private static HashMap<String, Set<FileTechnologyStack>> mapFilesByLanguages(
-            Collection<FileTechnologyStack> files,
-            Collection<String> languages) {
-        var fileLanguagesMapping = new HashMap<String, Set<FileTechnologyStack>>();
-
-        for (String language : languages) {
-            var languageMatches = new HashSet<FileTechnologyStack>();
-            for (var file : files)
-                if (file.language().equals(language))
-                    languageMatches.add(file);
-
-            fileLanguagesMapping.put(language, languageMatches);
-        }
-
-        return fileLanguagesMapping;
-    }
-
-    private static HashMap<String, Set<FileTechnologyStack>> mapFilesByTechnologies(
-            Collection<FileTechnologyStack> files,
-            Collection<String> technologies) {
-        var fileTechnologyMapping = new HashMap<String, Set<FileTechnologyStack>>();
-
-        for (String technology : technologies) {
-            var technologyMatches = new HashSet<FileTechnologyStack>();
-            for (var file : files)
-                if (file.technologies().contains(technology))
-                    technologyMatches.add(file);
-
-            fileTechnologyMapping.put(technology, technologyMatches);
-        }
-
-        return fileTechnologyMapping;
-    }
-
     public static Profile loadFrom(File file, LLM llm) {
         JSONObject profileConfig;
 
