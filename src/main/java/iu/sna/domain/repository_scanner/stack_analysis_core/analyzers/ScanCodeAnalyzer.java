@@ -118,7 +118,8 @@ public class ScanCodeAnalyzer extends BasicAnalyzer implements IAnalyzer {
         if (exitCode != 0) {
             throw new IOException("ScanCode failed with exit code " + exitCode);
         }
-    
+
+        // System.out.println("Json output content: " + Files.readString(outputFile.toPath()));
         return outputFile;
     }
 
@@ -132,6 +133,7 @@ public class ScanCodeAnalyzer extends BasicAnalyzer implements IAnalyzer {
     }
 
     public static List<FileTechnologyStack> parseResult(File jsonFile) throws IOException {
+        System.out.println("Parsing results...");
         Map<String, String> extToLangMap = loadExtensionToLanguage();
         Map<String, Object> scanData = mapper.readValue(jsonFile, Map.class);
         List<FileTechnologyStack> result = new ArrayList<>();
