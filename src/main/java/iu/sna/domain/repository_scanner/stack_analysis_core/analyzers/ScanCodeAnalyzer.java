@@ -9,9 +9,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.nio.file.Paths;
+import java.nio.file.Files;
 import com.fasterxml.jackson.core.type.TypeReference;
 import java.io.InputStream;
 
+import iu.sna.cli.config.CommandUtils;
 import iu.sna.domain.repository_scanner.FileTechnologyStack;
 import iu.sna.domain.repository_scanner.stack_analysis_core.core.AnalysisResult;
 import iu.sna.domain.repository_scanner.stack_analysis_core.core.BasicAnalyzer;
@@ -26,10 +29,10 @@ public class ScanCodeAnalyzer extends BasicAnalyzer implements IAnalyzer {
 
     private static Map<String, String> EXT_TO_LANG = null;
 
-    private static void loadExtensionToLanguage() {
-        if (EXT_TO_LANG != null) return;
+    private static Map<String, String> loadExtensionToLanguage() {
+        if (EXT_TO_LANG != null) return EXT_TO_LANG;
         try {
-            InputStream is = ScanCodeAnalyzer.class.getClassLoader().getResourceAsStream("com/domain/repository_scanner/stack_analysis_core/config/ScanCodeConfig.json");
+            InputStream is = ScanCodeAnalyzer.class.getClassLoader().getResourceAsStream("iu/sna/domain/repository_scanner/stack_analysis_core/config/ScanCodeConfig.json");
             if (is != null) {
                 Map<String, Object> config = mapper.readValue(is, new TypeReference<Map<String, Object>>(){});
                 Object extLangObj = config.get("extension_to_language");
@@ -48,6 +51,7 @@ public class ScanCodeAnalyzer extends BasicAnalyzer implements IAnalyzer {
             EXT_TO_LANG = Map.of();
             System.err.println("Could not load extension_to_language from config: " + e.getMessage());
         }
+        return EXT_TO_LANG;
     }
 
     public ScanCodeAnalyzer() {
@@ -82,17 +86,25 @@ public class ScanCodeAnalyzer extends BasicAnalyzer implements IAnalyzer {
     }
 
     private File runScanCode(File projectDir) throws IOException, InterruptedException {
-        File outputFile = File.createTempFile("scancode_results", ".json");
+        File outputFile = new File (CommandUtils.tempDirectory + "scancode_results.json");
         outputFile.deleteOnExit(); // Clean temp file
     
-        // Launch ScanCode from CLI
-        ProcessBuilder pb = new ProcessBuilder(
-            "scancode",
-            "--package",
-            "--json-pp",
-            outputFile.getAbsolutePath(),
-            projectDir.getAbsolutePath()
-        );
+        // Load excluded directories from config
+        List<String> excludedDirs = loadExcludedDirectories();
+    
+        // Prepare command with ignore arguments
+        List<String> command = new ArrayList<>();
+        command.add("scancode");
+        command.add("--package");
+        command.add("--json-pp");
+        command.add(outputFile.getAbsolutePath());
+        command.add(projectDir.getAbsolutePath());
+        for (String dir : excludedDirs) {
+            command.add("--ignore");
+            command.add("\"" + dir + "\"");
+        }
+        // System.out.println("ScanCode command: " + String.join(" ", command));
+        ProcessBuilder pb = new ProcessBuilder(command);
     
         pb.directory(projectDir);
     
@@ -110,12 +122,21 @@ public class ScanCodeAnalyzer extends BasicAnalyzer implements IAnalyzer {
         return outputFile;
     }
 
+    private List<String> loadExcludedDirectories() throws IOException {
+        InputStream is = ScanCodeAnalyzer.class.getClassLoader().getResourceAsStream("iu/sna/domain/repository_scanner/stack_analysis_core/config/ScanCodeConfig.json");
+        if (is != null) {
+            Map<String, Object> config = mapper.readValue(is, new TypeReference<Map<String, Object>>(){});
+            return (List<String>) config.getOrDefault("excluded_directories", new ArrayList<>());
+        }
+        return new ArrayList<>();
+    }
+
     public static List<FileTechnologyStack> parseResult(File jsonFile) throws IOException {
-        loadExtensionToLanguage();
+        Map<String, String> extToLangMap = loadExtensionToLanguage();
         Map<String, Object> scanData = mapper.readValue(jsonFile, Map.class);
         List<FileTechnologyStack> result = new ArrayList<>();
 
-        //  Collect technologies from packages
+        // Collect technologies from packages
         Map<String, Set<String>> fileToTechnologies = new HashMap<>();
         Map<String, String> packageUidToTech = new HashMap<>();
         List<Map<String, Object>> packages = (List<Map<String, Object>>) scanData.get("packages");
@@ -139,7 +160,7 @@ public class ScanCodeAnalyzer extends BasicAnalyzer implements IAnalyzer {
             }
         }
 
-        // 1. Собираем зависимости из dependencies
+        // Collect dependencies
         Map<String, Set<String>> fileToDependencies = new HashMap<>();
         allProjectDependencies = new HashSet<>();
         List<Map<String, Object>> dependencies = (List<Map<String, Object>>) scanData.get("dependencies");
@@ -156,7 +177,7 @@ public class ScanCodeAnalyzer extends BasicAnalyzer implements IAnalyzer {
             }
         }
 
-        //  Collect languages and technologies from files
+        // Collect languages and technologies from files
         List<Map<String, Object>> files = (List<Map<String, Object>>) scanData.get("files");
         if (files != null) {
             for (Map<String, Object> file : files) {
@@ -174,16 +195,16 @@ public class ScanCodeAnalyzer extends BasicAnalyzer implements IAnalyzer {
                         if (langObj != null) language = (String) langObj;
                     }
                 }
-                // If language is not defined, try to get it from the extension using hash map
-                if ((language == null || language.isBlank()) && path != null) {
-                    String fileName = new File(path).getName().toLowerCase();
-                    int dot = fileName.lastIndexOf('.');
-                    String ext = (dot != -1) ? fileName.substring(dot) : "";
-                    language = EXT_TO_LANG.getOrDefault(ext, null);
+               
+                // If language is null, determine it from file extension
+                if (language == null) {
+                    String fileExtension = path.contains(".") ? path.substring(path.lastIndexOf('.')) : "";
+                    language = extToLangMap.getOrDefault(fileExtension, null);
                 }
+               
                 // Package technologies
                 Set<String> technologies = new HashSet<>(fileToTechnologies.getOrDefault(path, new HashSet<>()));
-                // Добавляем зависимости для файла
+                // Add dependencies for the file
                 technologies.addAll(fileToDependencies.getOrDefault(path, new HashSet<>()));
                 // Add technologies from for_packages
                 List<String> forPackages = (List<String>) file.get("for_packages");
@@ -206,27 +227,27 @@ public class ScanCodeAnalyzer extends BasicAnalyzer implements IAnalyzer {
     /**
      * Pretty prints the list of FileTechnologyStack
      */
-    public static void print_pisun(Collection<FileTechnologyStack> stacks) {
-        // Сначала общий стек
-        Set<String> allLangs = new HashSet<>();
-        Set<String> allTechs = new HashSet<>();
-        for (FileTechnologyStack stack : stacks) {
-            if (stack.language() != null) allLangs.add(stack.language());
-            allTechs.addAll(stack.technologies());
-        }
-        allTechs.addAll(allProjectDependencies); // добавить зависимости в общий стек
-        System.out.println("=== Project Technology Stack Summary ===");
-        System.out.println("Languages detected: " + String.join(", ", allLangs));
-        System.out.println("Technologies detected: " + String.join(", ", allTechs));
-        System.out.println("Dependencies detected: " + String.join(", ", allProjectDependencies));
-        System.out.println("Total files analyzed: " + stacks.size());
-        System.out.println("----------------------------------------");
-        // Затем подробная инфа по каждому файлу
-        for (FileTechnologyStack stack : stacks) {
-            System.out.println("File: " + stack.file().getAbsolutePath());
-            System.out.println("Language: " + stack.language());
-            System.out.println("Technologies: " + String.join(", ", stack.technologies()));
-            System.out.println("----------------------------------------");
-        }
-    }
+    // public static void prettyPrint(Collection<FileTechnologyStack> stacks) {
+    //     // Сначала общий стек
+    //     Set<String> allLangs = new HashSet<>();
+    //     Set<String> allTechs = new HashSet<>();
+    //     for (FileTechnologyStack stack : stacks) {
+    //         if (stack.language() != null) allLangs.add(stack.language());
+    //         allTechs.addAll(stack.technologies());
+    //     }
+    //     allTechs.addAll(allProjectDependencies); // добавить зависимости в общий стек
+    //     System.out.println("=== Project Technology Stack Summary ===");
+    //     System.out.println("Languages detected: " + String.join(", ", allLangs));
+    //     System.out.println("Technologies detected: " + String.join(", ", allTechs));
+    //     System.out.println("Dependencies detected: " + String.join(", ", allProjectDependencies));
+    //     System.out.println("Total files analyzed: " + stacks.size());
+    //     System.out.println("----------------------------------------");
+    //     // Затем подробная инфа по каждому файлу
+    //     for (FileTechnologyStack stack : stacks) {
+    //         System.out.println("File: " + stack.file().getAbsolutePath());
+    //         System.out.println("Language: " + stack.language());
+    //         System.out.println("Technologies: " + String.join(", ", stack.technologies()));
+    //         System.out.println("----------------------------------------");
+    //     }
+    // }
 }

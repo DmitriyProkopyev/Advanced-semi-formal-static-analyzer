@@ -1,8 +1,7 @@
 {
   "excluded_directories": [
     "node_modules",
-    "venv",
-    "env",
+    "*env*",
     "virtualenv",
     "CVS",
     "build",

@@ -19,9 +19,8 @@ public class RepositoryScanner {
     }
 
     public Collection<FileTechnologyStack> scan() {
-        // Analyze all files in the repository and cache result
-        Path rootPath = directories.getRoot().getData();
-        lastScanResult = analyzer.analyzeProjectFiles(rootPath.toString());
+        var rootPath = directories.getRoot().getData().toString();
+        lastScanResult = analyzer.analyzeProjectFiles(rootPath);
         return lastScanResult;
     }
 

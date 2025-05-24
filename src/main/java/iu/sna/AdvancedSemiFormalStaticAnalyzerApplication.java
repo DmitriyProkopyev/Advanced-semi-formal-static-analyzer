@@ -1,12 +1,10 @@
 package iu.sna;
 
 import iu.sna.cli.validator.ValidationException;
-import iu.sna.infrastructure.Tree;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.shell.command.annotation.CommandScan;
 
-import java.nio.file.Path;
 import java.util.*;
 
 @CommandScan
