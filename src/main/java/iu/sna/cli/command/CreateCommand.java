@@ -71,7 +71,6 @@ public class CreateCommand {
                                 context == null ? new ArrayList<>() : Arrays.asList(context),
                                 CommandUtils.createDirectoryTree(repository, directories),
                                 Arrays.asList(priorities)
-                        ).collectList()
-                        .block()));
+                        )));
     }
 }

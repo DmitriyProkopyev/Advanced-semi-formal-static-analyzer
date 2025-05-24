@@ -11,7 +11,6 @@ import iu.sna.infrastructure.LLMType;
 import iu.sna.infrastructure.PDFBuilder;
 import iu.sna.infrastructure.Tree;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.FluxSink;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -42,137 +41,133 @@ public class SemiFormalStaticAnalyzer implements ApplicationFacade {
     }
 
     @Override
-    public Flux<String> createProfile(String name,
+    public String createProfile(String name,
                                       Collection<Path> context,
                                       Tree<Path> filteredDirectories,
                                       Iterable<Integer> priorities) {
-        return Flux.create(emitter -> new Thread(() -> {
-            try {
-                emitter.next("User priorities understood, inferring best fit practices...");
-                var abstractStandards = taxonomyMap.unpackNFRSequence(priorities);
-                emitter.next("Best fit practices inference complete.");
+        try {
+            System.out.println("User priorities understood, inferring best fit practices...");
+            var abstractStandards = taxonomyMap.unpackNFRSequence(priorities);
+            System.out.println("Best fit practices inference complete.");
 
-                emitter.next("Analyzing the technology stack of the given repository...");
-                var scanner = new RepositoryScanner(filteredDirectories);
-                var technologyStack = scanner.scan();
-                var languages = scanner.getAllLanguages();
-                emitter.next("Used languages: " + String.join(",", languages));
-                var technologies = scanner.getAllTechnologies();
-                emitter.next("Used technologies: " + String.join(",", technologies));
-                emitter.next("Repository analysis complete.");
+            System.out.println("Analyzing the technology stack of the given repository...");
+            var scanner = new RepositoryScanner(filteredDirectories);
+            var technologyStack = scanner.scan();
+            var languages = scanner.getAllLanguages();
+            System.out.println("Used languages: " + String.join(",", languages));
+            var technologies = scanner.getAllTechnologies();
+            System.out.println("Used technologies: " + String.join(",", technologies));
+            System.out.println("Repository analysis complete.");
 
-                CrossReferenceStandardGenerator standardGenerator;
-                if (!context.isEmpty()) {
-                    emitter.next("Analyzing user context...");
-                    standardGenerator = new CrossReferenceStandardGenerator(this.llm, abstractStandards, context);
-                    emitter.next("Analysis complete, user context is accounted for.");
-                } else {
-                    standardGenerator = new CrossReferenceStandardGenerator(abstractStandards, this.llm);
-                }
-
-                emitter.next("Preparing language-specific standards...");
-                var languagesToStandards = standardGenerator.generateFor(languages);
-                emitter.next("Language-specific standards inference complete.");
-                emitter.next("Preparing technology-specific standards...");
-                var technologiesToStandards = standardGenerator.generateFor(technologies);
-                emitter.next("Technology-specific standards inference complete.");
-
-                emitter.next("Grouping standards into validation blocks...");
-                var validationBlockBuilder = new ValidationBlockBuilder(technologyStack, this.llm);
-                var validationBlocks = validationBlockBuilder.buildFrom(languagesToStandards, technologiesToStandards);
-                emitter.next("Standards grouping and instructions inference complete.");
-
-                emitter.next("Finalizing profile setup...");
-                var profile = new Profile(name, validationBlocks);
-                profile.saveInto(Config.profilesDirectory);
-                profiles.put(profile.name, profile);
-                emitter.next("Profile created successfully!");
-                emitter.complete();
-            } catch (Exception exception) {
-                emitter.next("Process interrupted due to a critical error...");
-                emitter.error(exception);
+            CrossReferenceStandardGenerator standardGenerator;
+            if (!context.isEmpty()) {
+                System.out.println("Analyzing user context...");
+                standardGenerator = new CrossReferenceStandardGenerator(this.llm, abstractStandards, context);
+                System.out.println("Analysis complete, user context is accounted for.");
+            } else {
+                standardGenerator = new CrossReferenceStandardGenerator(abstractStandards, this.llm);
             }
-        }).start(), FluxSink.OverflowStrategy.BUFFER);
+
+            System.out.println("Preparing language-specific standards...");
+            var languagesToStandards = standardGenerator.generateFor(languages);
+            System.out.println("Language-specific standards inference complete.");
+            System.out.println("Preparing technology-specific standards...");
+            var technologiesToStandards = standardGenerator.generateFor(technologies);
+            System.out.println("Technology-specific standards inference complete.");
+
+            System.out.println("Grouping standards into validation blocks...");
+            var validationBlockBuilder = new ValidationBlockBuilder(technologyStack, this.llm);
+            var validationBlocks = validationBlockBuilder.buildFrom(languagesToStandards, technologiesToStandards);
+            System.out.println("Standards grouping and instructions inference complete.");
+
+            System.out.println("Finalizing profile setup...");
+            var profile = new Profile(name, validationBlocks);
+            profile.saveInto(Config.profilesDirectory);
+            profiles.put(profile.name, profile);
+            System.out.println("Profile created successfully!");
+        } catch (Exception exception) {
+            System.out.println("Process interrupted due to a critical error...");
+        }
+
+        return "Profile creation completed.";
     }
 
     @Override
-    public Flux<String> scan(String profileName,
+    public String scan(String profileName,
                              Tree<Path> filteredDirectories,
                              File reportTargetLocation) {
-        return Flux.create(emitter -> new Thread(() -> {
-            try {
-                emitter.next("Loading the project profile...");
-                Profile profile;
-                if (profiles.containsKey(profileName))
-                    profile = profiles.get(profileName);
-                else
-                    profile = Profile.loadFrom(Config.profilesDirectory.resolve(profileName).toFile(), llm);
-                emitter.next("Profile loading complete.");
+        try {
+            System.out.println("Loading the project profile...");
+            Profile profile;
+            if (profiles.containsKey(profileName))
+                profile = profiles.get(profileName);
+            else
+                profile = Profile.loadFrom(Config.profilesDirectory.resolve(profileName).toFile(), llm);
+            System.out.println("Profile loading complete.");
 
-                emitter.next("Scanning the repository for updates...");
-                var scanner = new RepositoryScanner(filteredDirectories);
-                var technologyStack = scanner.scan();
-                var languages = scanner.getAllLanguages();
-                emitter.next("Used languages: " + String.join(",", languages));
-                var technologies = scanner.getAllTechnologies();
-                emitter.next("Used technologies: " + String.join(",", technologies));
+            System.out.println("Scanning the repository for updates...");
+            var scanner = new RepositoryScanner(filteredDirectories);
+            var technologyStack = scanner.scan();
+            var languages = scanner.getAllLanguages();
+            System.out.println("Used languages: " + String.join(",", languages));
+            var technologies = scanner.getAllTechnologies();
+            System.out.println("Used technologies: " + String.join(",", technologies));
 
-                emitter.next("Updates acquired, mapping the project files to validation blocks...");
-                var mapping = profile.mapOntoValidationBlocks(technologyStack);
-                emitter.next("Mapping complete.");
+            System.out.println("Updates acquired, mapping the project files to validation blocks...");
+            var mapping = profile.mapOntoValidationBlocks(technologyStack);
+            System.out.println("Mapping complete.");
 
-                emitter.next("Primary scanning started...");
-                var criticism = new HashMap<ValidationBlock, String>();
-                for (var validationBlock : mapping.keySet()) {
-                    emitter.next("Analysing " + validationBlock.name + "...");
-                    var files = mapping.get(validationBlock);
-                    emitter.next("Constructing dependency graph for " + validationBlock.name + "...");
-                    var graph = new DependencyGraph(files);
-                    var operator = new DependencyGraphOperator(graph);
-                    emitter.next("Dependency graph preparation complete.");
+            System.out.println("Primary scanning started...");
+            var criticism = new HashMap<ValidationBlock, String>();
+            for (var validationBlock : mapping.keySet()) {
+                System.out.println("Analysing " + validationBlock.name + "...");
+                var files = mapping.get(validationBlock);
+                System.out.println("Constructing dependency graph for " + validationBlock.name + "...");
+                var graph = new DependencyGraph(files);
+                var operator = new DependencyGraphOperator(graph);
+                System.out.println("Dependency graph preparation complete.");
 
-                    emitter.next("Performing context clusterization for " + validationBlock.name + "...");
-                    int maxInput = (int) (this.llmType.maxOutputTokens * Config.targetOutputToInputProportion);
-                    int upperBound = (int) (this.llmType.maxInputTokens / (Config.targetOutputToInputProportion + 1.0));
-                    maxInput = Math.min(maxInput, upperBound);
+                System.out.println("Performing context clusterization for " + validationBlock.name + "...");
+                int maxInput = (int) (this.llmType.maxOutputTokens * Config.targetOutputToInputProportion);
+                int upperBound = (int) (this.llmType.maxInputTokens / (Config.targetOutputToInputProportion + 1.0));
+                maxInput = Math.min(maxInput, upperBound);
 
-                    var clusters = operator.extractClusters(maxInput, Config.maxClusters);
-                    emitter.next("Context clusterization complete, analyzing clusters...");
+                var clusters = operator.extractClusters(maxInput, Config.maxClusters);
+                System.out.println("Context clusterization complete, analyzing clusters...");
 
-                    var responses = new ArrayList<String>();
-                    int index = 0;
-                    for (var cluster : clusters) {
-                        index++;
-                        emitter.next("Analyzing cluster " + index + "...");
-                        var response = validationBlock.applyOn(cluster);
-                        responses.add(response);
-                        emitter.next("Cluster " + index + " analysis complete.");
-                    }
-
-                    emitter.next("Separate clusters analysis complete.");
-                    emitter.next("Unifying cluster analysis results for " + validationBlock.name + "...");
-                    var unifiedCriticism = validationBlock.unify(responses);
-                    criticism.put(validationBlock, unifiedCriticism);
-                    emitter.next("Analysis of " + validationBlock.name + " complete.");
+                var responses = new ArrayList<String>();
+                int index = 0;
+                for (var cluster : clusters) {
+                    index++;
+                    System.out.println("Analyzing cluster " + index + "...");
+                    var response = validationBlock.applyOn(cluster);
+                    responses.add(response);
+                    System.out.println("Cluster " + index + " analysis complete.");
                 }
 
-                emitter.next("Analysis complete, building the final report...");
-                var reportGenerator = new ReportGenerator("\n\n## ",
-                        "\n\n", "\n\n___\n\n", Config.tempDirectory);
-
-                var datetime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"));
-                var reportName = String.format("Project %s quality report from %s",
-                        profileName, datetime);
-                var report = reportGenerator.generateReport(reportName, criticism);
-
-                var pdfBuilder = new PDFBuilder();
-                pdfBuilder.fromMarkdown(report, reportTargetLocation);
-                emitter.next("Quality report successfully generated at " + reportTargetLocation.getAbsolutePath() + "!");
-                emitter.complete();
-            } catch (Exception exception) {
-                emitter.next("Process interrupted due to a critical error...");
-                emitter.error(exception);
+                System.out.println("Separate clusters analysis complete.");
+                System.out.println("Unifying cluster analysis results for " + validationBlock.name + "...");
+                var unifiedCriticism = validationBlock.unify(responses);
+                criticism.put(validationBlock, unifiedCriticism);
+                System.out.println("Analysis of " + validationBlock.name + " complete.");
             }
-        }).start(), FluxSink.OverflowStrategy.BUFFER);
+
+            System.out.println("Analysis complete, building the final report...");
+            var reportGenerator = new ReportGenerator("\n\n## ",
+                    "\n\n", "\n\n___\n\n", Config.tempDirectory);
+
+            var datetime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"));
+            var reportName = String.format("Project %s quality report from %s",
+                    profileName, datetime);
+            var report = reportGenerator.generateReport(reportName, criticism);
+
+            var pdfBuilder = new PDFBuilder();
+            pdfBuilder.fromMarkdown(report, reportTargetLocation);
+            System.out.println("Quality report successfully generated at " + reportTargetLocation.getAbsolutePath() + "!");
+        } catch (Exception exception) {
+            System.out.println("Process interrupted due to a critical error...");
+        }
+
+        return "Scanning complete.";
     }
 }

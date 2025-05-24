@@ -59,7 +59,6 @@ public class ScanCommand {
                                 profile,
                                 CommandUtils.createDirectoryTree(repository, directories),
                                 output.toFile()
-                        ).collectList()
-                        .block()));
+                        )));
     }
 }

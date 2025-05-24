@@ -1,7 +1,6 @@
 package iu.sna.application;
 
 import iu.sna.infrastructure.Tree;
-import reactor.core.publisher.Flux;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -10,12 +9,12 @@ import java.util.Collection;
 public interface ApplicationFacade {
     Collection<String> readNFRs();
 
-    Flux<String> createProfile(String name,
+    String createProfile(String name,
                                Collection<Path> context,
                                Tree<Path> filteredDirectories,
                                Iterable<Integer> priorities);
 
-    Flux<String> scan(String profileName,
+    String scan(String profileName,
                       Tree<Path> filteredDirectories,
                       File reportTargetLocation);
 }
