@@ -23,6 +23,7 @@ public class ReportGenerator {
     }
 
     public File generateReport(String name, Map<ValidationBlock, String> content) throws IOException {
+        /*
         var report = this.location.resolve(name.replace(':', '_'));
         var builder = new StringBuilder();
 
@@ -35,6 +36,18 @@ public class ReportGenerator {
         }
 
         builder.append("End of the report.");
+        Files.write(report, builder.toString().getBytes(StandardCharsets.UTF_8));
+        return report.toFile();
+
+         */
+
+        var report = this.location.resolve(name.replace(':', '_'));
+        var builder = new StringBuilder();
+
+        var block = content.keySet().stream().findAny().get();
+        builder.append(content.get(block));
+
+        builder.append("\n\nEnd of the report.");
         Files.write(report, builder.toString().getBytes(StandardCharsets.UTF_8));
         return report.toFile();
     }

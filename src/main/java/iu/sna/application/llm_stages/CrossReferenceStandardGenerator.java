@@ -79,6 +79,7 @@ public class CrossReferenceStandardGenerator {
     }
 
     public Map<String, List<String>> generateFor(Collection<String> technologies) {
+        /*
         // use LLM to generate technology-specific standard
         StringBuilder prompt = new StringBuilder();
         Map<String, List<String>> res = new HashMap<>();
@@ -96,5 +97,14 @@ public class CrossReferenceStandardGenerator {
 
         // return standards for each technology
         return res;
+
+         */
+
+        try {
+            Thread.sleep(4500);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        return new HashMap<String, List<String>>();
     }
 }

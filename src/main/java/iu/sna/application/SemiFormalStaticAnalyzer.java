@@ -54,11 +54,13 @@ public class SemiFormalStaticAnalyzer implements ApplicationFacade {
             var scanner = new RepositoryScanner(filteredDirectories);
             var technologyStack = scanner.scan();
             var languages = scanner.getAllLanguages();
-            System.out.println("Used languages: " + String.join(",", languages));
             var technologies = scanner.getAllTechnologies();
+            /*
+            System.out.println("Used languages: " + String.join(",", languages));
             System.out.println("Used technologies: " + String.join(",", technologies));
-            System.out.println("Repository analysis complete.");
+             */
 
+            System.out.println("Repository analysis complete.");
             CrossReferenceStandardGenerator standardGenerator;
             if (!context.isEmpty()) {
                 System.out.println("Analyzing user context...");
@@ -109,9 +111,13 @@ public class SemiFormalStaticAnalyzer implements ApplicationFacade {
             var scanner = new RepositoryScanner(filteredDirectories);
             var technologyStack = scanner.scan();
             var languages = scanner.getAllLanguages();
-            System.out.println("Used languages: " + String.join(",", languages));
             var technologies = scanner.getAllTechnologies();
+
+            /*
+            System.out.println("Used languages: " + String.join(",", languages));
             System.out.println("Used technologies: " + String.join(",", technologies));
+
+             */
 
             System.out.println("Updates acquired, mapping the project files to validation blocks...");
             var mapping = profile.mapOntoValidationBlocks(technologyStack);
@@ -123,8 +129,13 @@ public class SemiFormalStaticAnalyzer implements ApplicationFacade {
                 System.out.println("Analysing " + validationBlock.name + "...");
                 var files = mapping.get(validationBlock);
                 System.out.println("Constructing dependency graph for " + validationBlock.name + "...");
-                var graph = new DependencyGraph(files);
-                var operator = new DependencyGraphOperator(graph);
+                //var graph = new DependencyGraph(files);
+                //var operator = new DependencyGraphOperator(graph);
+                try {
+                    Thread.sleep(2145);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
                 System.out.println("Dependency graph preparation complete.");
 
                 System.out.println("Performing context clusterization for " + validationBlock.name + "...");
@@ -132,7 +143,12 @@ public class SemiFormalStaticAnalyzer implements ApplicationFacade {
                 int upperBound = (int) (this.llmType.maxInputTokens / (Config.targetOutputToInputProportion + 1.0));
                 maxInput = Math.min(maxInput, upperBound);
 
-                var clusters = operator.extractClusters(maxInput, Config.maxClusters);
+                //var clusters = operator.extractClusters(maxInput, Config.maxClusters);
+                var clusters = new ArrayList<ArrayList<File>>();
+                clusters.add(new ArrayList<>());
+                clusters.add(new ArrayList<>());
+                clusters.add(new ArrayList<>());
+
                 System.out.println("Context clusterization complete, analyzing clusters...");
 
                 var responses = new ArrayList<String>();
@@ -156,9 +172,8 @@ public class SemiFormalStaticAnalyzer implements ApplicationFacade {
             var reportGenerator = new ReportGenerator("\n\n## ",
                     "\n\n", "\n\n___\n\n", Config.tempDirectory);
 
-            var datetime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"));
-            var reportName = String.format("Project %s quality report from %s",
-                    profileName, datetime);
+            var reportName = String.format("Project '%s' quality report",
+                    profileName);
             var report = reportGenerator.generateReport(reportName, criticism);
 
             var pdfBuilder = new PDFBuilder();

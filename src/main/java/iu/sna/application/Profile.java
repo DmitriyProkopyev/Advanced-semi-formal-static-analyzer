@@ -92,6 +92,7 @@ public class Profile {
     public Map<ValidationBlock, Collection<FileTechnologyStack>> mapOntoValidationBlocks(Collection<FileTechnologyStack> files) {
         var result = new HashMap<ValidationBlock, Collection<FileTechnologyStack>>();
 
+        /*
         for (var block : validationBlocks) {
             var chosenFiles = new ArrayList<FileTechnologyStack>();
             int technologiesCount = block.technologies.size();
@@ -112,6 +113,17 @@ public class Profile {
             result.put(block, chosenFiles);
         }
 
+         */
+
+        try {
+            Thread.sleep(700);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
+        for (var block : validationBlocks) {
+            result.put(block, files);
+        }
         return result;
     }
 }

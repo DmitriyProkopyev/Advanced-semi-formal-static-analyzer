@@ -1,17 +1,10 @@
 package iu.sna;
 
 import iu.sna.cli.validator.ValidationException;
-import iu.sna.domain.file_coupling.DependencyGraph;
-import iu.sna.domain.file_coupling.DependencyGraphOperator;
-import iu.sna.domain.repository_scanner.FileTechnologyStack;
-import iu.sna.infrastructure.Graph;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.shell.command.annotation.CommandScan;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 
 @CommandScan
